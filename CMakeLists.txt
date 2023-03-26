@@ -38,12 +38,12 @@ endfunction()
 
 #### Arvenhold ####
 file(GLOB_RECURSE SOURCES practical_1/*.cpp practical_1/*.h)
-add_executable(Arvenhold64 ${SOURCES})
-target_include_directories(Arvenhold64 PRIVATE ${SFML_INCS})
-target_link_libraries(Arvenhold64 lib_tile_level_loader lib_maths sfml-graphics)
-copy_sfml_dll(Arvenhold64)
-set_target_properties(Arvenhold64 
+add_executable(1_ARVENHOLD ${SOURCES} )
+target_include_directories(1_ARVENHOLD SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(1_ARVENHOLD lib_tile_level_loader lib_maths sfml-graphics)
+copy_sfml_dll(1_ARVENHOLD)
+set_target_properties(1_ARVENHOLD 
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
 )
-add_dependencies (Arvenhold64 copy_resources)
+add_dependencies (1_ARVENHOLD copy_resources)
