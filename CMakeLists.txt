@@ -28,6 +28,12 @@ add_library(lib_maths INTERFACE)
 target_sources(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths/maths.h")
 target_include_directories(lib_maths INTERFACE "${CMAKE_SOURCE_DIR}/lib_maths" SYSTEM INTERFACE ${SFML_INCS})
 
+# B2D - Box2D phyics library
+add_subdirectory("lib/b2d/Box2D")
+#include_directories("lib/b2d/Box2D/")
+set(B2D_INCS "lib/b2d/Box2D/")
+link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
+
 ## DLLs
 function (copy_sfml_dll MyTarget )
 add_custom_command(TARGET ${MyTarget} POST_BUILD        # Adds a post-build event to MyTest
@@ -39,8 +45,8 @@ endfunction()
 #### Arvenhold ####
 file(GLOB_RECURSE SOURCES practical_1/*.cpp practical_1/*.h)
 add_executable(1_ARVENHOLD ${SOURCES} )
-target_include_directories(1_ARVENHOLD SYSTEM PRIVATE ${SFML_INCS})
-target_link_libraries(1_ARVENHOLD lib_tile_level_loader lib_maths sfml-graphics)
+target_include_directories(1_ARVENHOLD SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS})
+target_link_libraries(1_ARVENHOLD lib_tile_level_loader lib_maths Box2D sfml-graphics)
 copy_sfml_dll(1_ARVENHOLD)
 set_target_properties(1_ARVENHOLD 
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
