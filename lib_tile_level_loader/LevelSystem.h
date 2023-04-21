@@ -13,7 +13,8 @@ class LevelSystem {
 public:
     enum TILE { EMPTY, START, END, WALL, ENEMY, WAYPOINT };
 
-    static void loadLevelFile(const std::string&, float tileSize = 100.f);
+    static void generateDungeon(int level);
+
     static void Render(sf::RenderWindow& window);
     static sf::Color getColor(TILE t);
     static void setColor(TILE t, sf::Color c);
@@ -44,4 +45,9 @@ protected:
 private:
     LevelSystem() = delete;
     ~LevelSystem() = delete;
+
+    static int _rooms[16][4][81];
+    static int _specialRooms[11][81];
+    static int _clusters[15][4][9];
+    static int _specialClusters[2][9];
 };
