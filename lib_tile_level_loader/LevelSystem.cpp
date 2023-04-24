@@ -46,7 +46,7 @@ void LevelSystem::generateDungeon(int level)
 
 	int* tCluster;
 
-	for (int dRow = 0; dRow < 1; dRow++)
+	for (int dRow = 0; dRow < 5; dRow++)
 	{
 		int cOffset = rand() % 12;
 
@@ -56,7 +56,7 @@ void LevelSystem::generateDungeon(int level)
 
 			for (int rRow = 0; rRow < 9; rRow++)
 			{
-				for (int dCol = 0; dCol < 1; dCol++)
+				for (int dCol = 0; dCol < 5; dCol++)
 				{
 					if (layout[dCol + dRow * 5] > 14)
 					{
@@ -119,8 +119,8 @@ void LevelSystem::generateDungeon(int level)
 
 	cout << temp_tiles.size() << endl;
 	_tiles = std::make_unique<TILE[]>(count);
-	_width = 27; //set static class vars
-	_height = 27;
+	_width = 5*27; //set static class vars
+	_height = 5*27;
 	std::copy(temp_tiles.begin(), temp_tiles.end(), &_tiles[0]);
 	std::cout << "Level " << level << " Loaded. " << 27 << "x" << 27 << std::endl;
 	buildSprites();
@@ -168,9 +168,13 @@ LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {
     return getTile(Vector2ul((v - _offset) / (_tileSize)));
 }
 
-void LevelSystem::Render(RenderWindow& window) {
-    for (size_t i = 0; i < _width * _height; ++i) {
-        window.draw(*_sprites[i]);
+void LevelSystem::Render() {
+    for (size_t i = 0; i < _width * _height; ++i) 
+	{
+		if (_tiles[i] != EMPTY)
+		{
+			Renderer::queue(_sprites[i].get());
+		}
     }
 }
 

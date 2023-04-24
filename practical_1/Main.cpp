@@ -3,6 +3,7 @@
 #include <iostream>
 #include "LevelSystem.h"
 #include "player.h"
+#include "arvenhold.h"
 
 using namespace std;
 using namespace sf;
@@ -10,20 +11,16 @@ using namespace sf;
 const int gameWidth = 1920;
 const int gameHeight = 1080;
 
-unique_ptr<Player> player(new Player());
-
-Texture roomSpriteSheet;
+//unique_ptr<Player> player(new Player());
 
 void load()
 {
+    gameScene.reset(new GameScene());
+    menuScene.reset(new MenuScene());
+    gameScene->load();
+    menuScene->load();
 
-    if (!roomSpriteSheet.loadFromFile("res/img/dungeon_tiles.png"))
-    {
-        cerr << "Failed to load spritesheet!" << endl;
-    }
-
-
-    ls::generateDungeon(1);
+    activeScene = gameScene;
 }
 
 void Update(RenderWindow& window)
@@ -32,32 +29,18 @@ void Update(RenderWindow& window)
     static Clock clock;
     float dt = clock.restart().asSeconds();
 
-    // check and consume events
-    Event event;
-    while (window.pollEvent(event))
-    {
-        if (event.type == Event::Closed)
-        {
-            window.close();
-            return;
-        }
-    }
-
     // Quit Via ESC Key
     if (Keyboard::isKeyPressed(Keyboard::Escape))
     {
         window.close();
     }
 
-    player->Update(dt);
+    activeScene->update(dt);
 }
 
 void Render(RenderWindow& window)
 {
-    ls::Render(window);
-
-
-    player->Render(window);
+    activeScene->render();
 }
 
 
@@ -67,6 +50,8 @@ int main() {
     View view;
     view.reset(FloatRect({ 100, 100 }, { 1920, 1080 }));
     window.setView(view);
+
+    Renderer::initialise(window);
 
     load();
 

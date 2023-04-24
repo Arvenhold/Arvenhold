@@ -23,3 +23,23 @@ void Entity::Update(const double dt) {
 Entity::Entity(unique_ptr<Shape> s) : _shape(std::move(s)) {
 
 }
+
+void Entity::Render() const {
+	Renderer::queue(_shape.get());
+}
+
+void EntityManager::render()
+{
+	for (auto e : list)
+	{
+		e->Render();
+	}
+}
+
+void EntityManager::update(double dt)
+{
+	for (auto e : list)
+	{
+		e->Update(dt);
+	}
+}

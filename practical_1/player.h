@@ -1,5 +1,6 @@
 #pragma once
 #include "entity.h"
+#include "system_renderer.h"
 
 class Player : public Entity {
 
@@ -11,7 +12,4 @@ private:
 public:
 	void Update(double dt) override;
 	Player();
-	void Render(sf::RenderWindow& window) const override;
-
-
 };
