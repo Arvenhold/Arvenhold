@@ -34,8 +34,8 @@ void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {
 void LevelSystem::generateDungeon(int level)
 {
 	int layout[25] = { 16,7,8,-1,-1,
-						11,9,11,3,-1,
-						6,12,10,12,8,
+						11,13,11,3,-1,
+						6,14,10,12,8,
 						-1,11,4,14,9,
 						-1,0,-1,15,-1 };
 
