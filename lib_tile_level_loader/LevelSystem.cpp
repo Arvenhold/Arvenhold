@@ -10,7 +10,7 @@ size_t LevelSystem::_width;
 size_t LevelSystem::_height;
 Vector2f LevelSystem::_offset(0.0f, 0.0f);
 
-float LevelSystem::_tileSize(4.f);
+float LevelSystem::_tileSize(128.f);
 vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
 
 std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{ {WALL, Color::Color(50,50,50)}, {END, Color::Color(120,120,120)}, {START, Color::Color(0,120,0)} };
@@ -46,7 +46,7 @@ void LevelSystem::generateDungeon(int level)
 
 	int* tCluster;
 
-	for (int dRow = 0; dRow < 5; dRow++)
+	for (int dRow = 0; dRow < 1; dRow++)
 	{
 		int cOffset = rand() % 12;
 
@@ -56,7 +56,7 @@ void LevelSystem::generateDungeon(int level)
 
 			for (int rRow = 0; rRow < 9; rRow++)
 			{
-				for (int dCol = 0; dCol < 5; dCol++)
+				for (int dCol = 0; dCol < 1; dCol++)
 				{
 					if (layout[dCol + dRow * 5] > 14)
 					{
@@ -119,8 +119,8 @@ void LevelSystem::generateDungeon(int level)
 
 	cout << temp_tiles.size() << endl;
 	_tiles = std::make_unique<TILE[]>(count);
-	_width = 5 * 27; //set static class vars
-	_height = 5 * 27;
+	_width = 27; //set static class vars
+	_height = 27;
 	std::copy(temp_tiles.begin(), temp_tiles.end(), &_tiles[0]);
 	std::cout << "Level " << level << " Loaded. " << 27 << "x" << 27 << std::endl;
 	buildSprites();

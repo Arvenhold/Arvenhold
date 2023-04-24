@@ -16,7 +16,7 @@ void Player::Update(double dt) {
 	}
 
 	if (Keyboard::isKeyPressed(Keyboard::D)) {
-		move(Vector2f(-_speed, 0.0f));
+		move(Vector2f(_speed, 0.0f));
 	}
 	Entity::Update(dt);
 }
