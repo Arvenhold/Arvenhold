@@ -10,7 +10,7 @@ size_t LevelSystem::_width;
 size_t LevelSystem::_height;
 Vector2f LevelSystem::_offset(0.0f, 0.0f);
 
-float LevelSystem::_tileSize(8.f);
+float LevelSystem::_tileSize(4.f);
 vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
 
 std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{ {WALL, Color::Color(50,50,50)}, {END, Color::Color(120,120,120)}, {START, Color::Color(0,120,0)} };
@@ -33,11 +33,11 @@ void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {
 
 void LevelSystem::generateDungeon(int level)
 {
-	int layout[25] = { 16,1,8,-1,-1,
-						5,-1,11,3,-1,
+	int layout[25] = { 16,7,8,-1,-1,
+						11,9,11,3,-1,
 						6,12,10,12,8,
-						-1,11,4,13,0,
-						1,9,-1,15,-1 };
+						-1,11,4,14,9,
+						-1,0,-1,15,-1 };
 
 	std::vector<TILE> temp_tiles;
 	temp_tiles.clear();
@@ -393,7 +393,7 @@ int LevelSystem::_clusters[15][4][9] =
 		//   █ 3
 		// ███
 		{-1,-1,-1,12,8,-1,6,9,-1},
-		{-1,2,-1,4,10,3,0,-1,-1},
+		{-1,2,-1,12,10,3,0,-1,-1},
 		{-1,2,-1,4,14,8,-1,6,9},
 		{-1,-1,-1,4,12,3,-1,6,3}
 	},
