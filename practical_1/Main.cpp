@@ -4,6 +4,7 @@
 #include "LevelSystem.h"
 #include "player.h"
 #include "arvenhold.h"
+#include "system_resources.h"
 
 using namespace std;
 using namespace sf;
