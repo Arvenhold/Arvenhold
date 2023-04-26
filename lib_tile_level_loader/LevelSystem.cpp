@@ -5,44 +5,47 @@
 using namespace std;
 using namespace sf;
 
-std::unique_ptr<LevelSystem::TILE[]> LevelSystem::_tiles;
-size_t LevelSystem::_width;
-size_t LevelSystem::_height;
-Vector2f LevelSystem::_offset(0.0f, 0.0f);
-
-float LevelSystem::_tileSize(128.f);
-vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;
-
-std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{ {WALL, Color::Color(50,50,50)}, {END, Color::Color(120,120,120)}, {START, Color::Color(0,120,0)} };
-
-sf::Color LevelSystem::getColor(LevelSystem::TILE t) {
-    auto it = _colours.find(t);
-    if (it == _colours.end()) {
-        _colours[t] = Color::Transparent;
-    }
-    return _colours[t];
-}
-
-void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {
-    auto it = _colours.find(t);
-    if (it != _colours.end())
-    {
-        _colours[t] = c;
-    }
-}
+// TO GET RID OF ONCE ENTITY COMPONENTS IS IMPLEMENTED
+//========================================================================================================================================================================
+std::unique_ptr<LevelSystem::TILE[]> LevelSystem::_tiles;																												//
+size_t LevelSystem::_width;																																				//
+size_t LevelSystem::_height;																																			//
+Vector2f LevelSystem::_offset(0.0f, 0.0f);																																//
+																																										//
+float LevelSystem::_tileSize(8.f);																																		//
+vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;																										//
+																																										//
+std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{ {WALL, Color::Color(50,50,50)}, {END, Color::Color(120,120,120)}, {START, Color::Color(0,120,0)} };		//
+																																										//
+sf::Color LevelSystem::getColor(LevelSystem::TILE t) {																													//
+    auto it = _colours.find(t);																																			//
+    if (it == _colours.end()) {																																			//
+        _colours[t] = Color::Transparent;																																//
+    }																																									//
+    return _colours[t];																																					//
+}																																										//
+																																										//
+void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {																											//
+    auto it = _colours.find(t);																																			//
+    if (it != _colours.end())																																			//
+    {																																									//
+        _colours[t] = c;																																				//
+    }																																									//
+}																																										//
+//========================================================================================================================================================================
 
 void LevelSystem::generateDungeon(int level)
 {
-	int layout[25] = { 16,7,8,-1,-1,
-						11,13,11,3,-1,
-						6,14,10,12,8,
-						-1,11,4,14,9,
-						-1,0,-1,15,-1 };
+	
 
 	std::vector<TILE> temp_tiles;
 	temp_tiles.clear();
 
 	srand(time(NULL));
+
+	int dungOffset = rand() % 5;
+
+	int* layout = _dungeonLayouts[level-1][dungOffset];
 
 	int* tCluster;
 
@@ -126,57 +129,68 @@ void LevelSystem::generateDungeon(int level)
 	buildSprites();
 }
 
-int LevelSystem::getHeight()
-{
-    return _height;
-}
+// TO GET RID OF ONCE ENTITY COMPONENTS IS IMPLEMENTED
+//====================================================================================================
+int LevelSystem::getHeight()																		//
+{																									//
+    return _height;																					//
+}																									//
+																									//
+int LevelSystem::getWidth()																			//
+{																									//
+    return _width;																					//
+}																									//
+																									//
+void LevelSystem::buildSprites() {																	//
+    _sprites.clear();																				//
+    for (size_t y = 0; y < LevelSystem::getHeight(); ++y) {											//
+        for (size_t x = 0; x < LevelSystem::getWidth(); ++x) {										//
+            auto s = make_unique<RectangleShape>();													//
+            s->setPosition(getTilePosition({ x, y }));												//
+            s->setSize(Vector2f(_tileSize, _tileSize));												//
+            s->setFillColor(getColor(getTile({ x, y })));											//
+            _sprites.push_back(move(s));															//
+        }																							//
+    }																								//
+}																									//
+																									//
+Vector2f LevelSystem::getTilePosition(Vector2ul p) {												//
+    return (Vector2f(p.x, p.y) * _tileSize);														//
+}																									//
+																									//
+LevelSystem::TILE LevelSystem::getTile(Vector2ul p) {												//
+    if (p.x > _width || p.y > _height) {															//
+        throw string("Tile out of range: ") + to_string(p.x) + "," + to_string(p.y) + ")";			//
+    }																								//
+    return _tiles[(p.y * _width) + p.x];															//
+}																									//
+																									//
+LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {												//
+    auto a = v - _offset;																			//
+    if (a.x < 0 || a.y < 0) {																		//
+        throw string("Tile out of range ");															//
+    }																								//
+    return getTile(Vector2ul((v - _offset) / (_tileSize)));											//
+}																									//
+																									//
+void LevelSystem::Render() {																		//
+    for (size_t i = 0; i < _width * _height; ++i) 													//
+	{																								//
+		if (_tiles[i] != EMPTY)																		//
+		{																							//
+			Renderer::queue(_sprites[i].get());														//
+		}																							//
+    }																								//
+}																									//
+//====================================================================================================
 
-int LevelSystem::getWidth()
-{
-    return _width;
-}
 
-void LevelSystem::buildSprites() {
-    _sprites.clear();
-    for (size_t y = 0; y < LevelSystem::getHeight(); ++y) {
-        for (size_t x = 0; x < LevelSystem::getWidth(); ++x) {
-            auto s = make_unique<RectangleShape>();
-            s->setPosition(getTilePosition({ x, y }));
-            s->setSize(Vector2f(_tileSize, _tileSize));
-            s->setFillColor(getColor(getTile({ x, y })));
-            _sprites.push_back(move(s));
-        }
-    }
-}
 
-Vector2f LevelSystem::getTilePosition(Vector2ul p) {
-    return (Vector2f(p.x, p.y) * _tileSize);
-}
+// ######################################
+// ## SEMI-SUDO-RANDOM-GENERATION FUN! ##
+// ######################################
 
-LevelSystem::TILE LevelSystem::getTile(Vector2ul p) {
-    if (p.x > _width || p.y > _height) {
-        throw string("Tile out of range: ") + to_string(p.x) + "," + to_string(p.y) + ")";
-    }
-    return _tiles[(p.y * _width) + p.x];
-}
-
-LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {
-    auto a = v - _offset;
-    if (a.x < 0 || a.y < 0) {
-        throw string("Tile out of range ");
-    }
-    return getTile(Vector2ul((v - _offset) / (_tileSize)));
-}
-
-void LevelSystem::Render() {
-    for (size_t i = 0; i < _width * _height; ++i) 
-	{
-		if (_tiles[i] != EMPTY)
-		{
-			Renderer::queue(_sprites[i].get());
-		}
-    }
-}
+// These should probably go on their own someplace else
 
 // Normal rooms
 int LevelSystem::_rooms[16][4][81] =
@@ -516,4 +530,89 @@ int LevelSystem::_specialClusters[2][9] =
 	// ▌ ▐
 	// █ █
 	{2,6,4,3,10,5,-1,0,-1},
+};
+
+// Dungeon layouts
+int LevelSystem::_dungeonLayouts[10][5][25] =
+{
+	// Level 1
+	{
+		{-1,-1,-1,-1,-1,  -1,-1,-1,16,-1,  -1,-1, 7, 9,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,-1,-1,  -1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,16,-1,-1,  -1,-1, 5,-1,-1,  -1,-1, 5,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,-1,  -1,-1,-1,-1,16,  -1,-1, 7, 4, 9,  -1,-1,15,-1,-1},
+		{-1,-1,-1,-1,-1,  -1,-1,-1,16,-1,  -1,-1,-1, 5,-1,  -1,-1, 7, 9,-1,  -1,-1,15,-1,-1}
+	},
+	// Level 2
+	{
+		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,16,  -1,-1,-1,-1, 5,  -1,-1, 7, 4, 9,  -1,-1,15,-1,-1},
+		{-1,-1,-1,-1,-1,  -1,-1,16,-1,-1,  -1, 7, 9,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,16,  -1,-1,-1, 7, 9,  -1,-1, 7, 9,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1}
+	},
+	// Level 3
+	{
+		{-1,16,-1,-1,-1,  -1, 5, 2,-1,-1,  -1, 6,13,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,16,-1,  -1,-1,-1, 5,-1,  -1,-1,-1,11, 3,  -1,-1, 7, 9,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1,11, 3,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6,12, 3,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,16,-1,  -1, 1,12, 9,-1,  -1,-1, 5,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1}
+	},
+	// Level 4
+	{
+		{-1,-1,-1,16,-1,  -1,-1,-1, 5,-1,  -1,-1, 7,14, 3,  -1,-1,11, 9,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,   7,13,-1,-1,-1,   6,10, 8,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,16,-1,  -1,-1, 7,14, 3,  -1,-1,11, 9,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1,11, 3,-1,-1,   1,13,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,  -1, 5, 2,-1,-1,  -1,11,13,-1,-1,  -1, 6,13,-1,-1,  -1,-1,15,-1,-1}
+	},
+	// Level 5
+	{
+		{-1,-1,-1,16,-1,  -1,-1, 2, 5,-1,  -1, 7,14,13,-1,  -1, 6,14, 9,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,16,-1,  -1,-1, 1,14, 8,  -1,-1, 7,14, 9,  -1,-1,11, 9,-1,  -1,-1,15,-1,-1},
+		{-1,-1, 2,16,-1,  -1, 1,14,13,-1,  -1,-1, 5, 5,-1,  -1,-1,11, 9,-1,  -1,-1,15,-1,-1},
+		{-1,16, 2,-1,-1,   1,14,13,-1,-1,  -1, 6,13,-1,-1,  -1,-1,11, 3,-1,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,   1,14, 3,-1,-1,   7,13,-1,-1,-1,   6,10, 8,-1,-1,  -1,-1,15,-1,-1}
+	},
+	// Level 6
+	{
+		{-1,-1,-1,16,-1,  -1, 6,12,13,-1,  -1, 5,11,10, 3,  -1,11, 9,-1,-1,  -1,15,-1,-1,-1},
+		{-1,-1,-1,-1,-1,  16,-1,-1,-1,-1,   5, 1,12, 8,-1,   6,12,10,13,-1,  -1, 0,-1,15,-1},
+		{-1,-1,16,-1,-1,  -1, 7,10, 8,-1,  -1,11,12,13,-1,  -1, 0,11, 9,-1,  -1,-1,15,-1,-1},
+		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,-1,   7, 8,-1, 2,16,  11,10,12,10, 9,  15,-1, 0,-1,-1},
+		{-1,16, 2,-1,-1,  -1, 6,14, 3,-1,  -1,-1,11, 8,-1,  -1,-1, 6,14, 3,  -1,-1,-1,15,-1}
+	},
+	// Level 7
+	{
+		{-1,-1,-1,-1,16,  -1,-1, 1,12,13,  -1, 7, 4,13, 5,  -1, 6,12,10, 9,  -1,-1,15,-1,-1},
+		{-1,16,-1,-1,-1,   7,13,-1,-1,-1,   5,11,12, 8,-1,   6,14,10,13,-1,  -1,0,-1,15,-1},
+		{-1,-1,-1,16,-1,   7, 8, 7,14, 3,   6,14,14, 9,-1,  -1,11, 9,-1,-1,  -1,15,-1,-1,-1},
+		{-1,-1, 2,-1,16,  -1, 7,10,12,13,  -1, 6,12,10, 9,  -1, 1,13,-1,-1,  -1,-1,15,-1,-1},
+		{-1,-1,16, 2,-1,  -1, 1,14,13,-1,  -1, 7,10,14, 3,  -1, 6,12, 9,-1,  -1,-1,15,-1,-1}
+	},
+	// Level 8
+	{
+		{16, 2,-1,-1,-1,  11,14,12, 3,-1,   6,13,11, 8,-1,  -1, 6,14, 9,-1,  -1,-1,15,-1,-1},
+		{-1, 7, 8,16,-1,   7,14,14,13,-1,   6,13,11, 9,-1,  -1,11, 9,-1,-1,  -1,15,-1,-1,-1},
+		{16,-1,-1,-1,-1,   5, 7, 8, 2,-1,  11,10,14,13,-1,   6, 4,13,15,-1,  -1,-1, 0,-1,-1},
+		{-1,-1,-1,-1,-1,  -1, 2,-1,-1,-1,   7,10,12, 3,-1,   6,12,14, 8,16,  -1,15, 6,10, 9},
+		{-1,-1, 7, 8,16,  -1, 7,14,14, 9,  -1, 6,13, 5,-1,  -1,-1,11,10, 3,  -1,-1,15,-1,-1}
+	},
+	// Level 9
+	{
+		{-1,-1,-1,-1,-1,   7, 4,12, 8,-1,   5,16,11,14, 3,   6,13, 5,15,-1,  -1, 6,10, 3,-1},
+		{-1,-1,-1,16,-1,   7,12, 4,14, 8,   6,14, 8,11, 9,   7,10,10, 9,-1,  15,-1,-1,-1,-1},
+		{-1, 2,-1,-1,16,   7,10,12,12,13,   6,12,13,11, 9,  -1,11,10, 9,-1,  -1,15,-1,-1,-1},
+		{ 7,12, 3,-1,-1,  11,14,12, 8,-1,   0,15,11, 9,-1,  -1, 1,13,16,-1,  -1,-1, 6, 9,-1},
+		{-1,-1,-1,-1,-1,   2,-1, 7, 8,-1,  11,12,14,10, 8,  15,11,13,16, 5,  -1, 0, 6,10, 9}
+	},
+	// Level 10
+	{
+		{16, 7, 8,-1,-1,  11,13,11, 3,-1,   6,14,10,12, 8,  -1,11, 4,14, 9,  -1, 0,-1,15,-1},
+		{-1, 2,-1,-1,16,   7,10,12, 8, 5,   6,12,13,11,13,  -1,11,10,14, 9,  -1,15,-1, 0,-1},
+		{-1, 7, 8,-1,-1,  -1,11,10, 8,16,   7,14, 4,13, 5,   6,13,-1,11,13,  -1,15,-1, 6, 9},
+		{-1,16,-1, 7, 8,  -1,11, 4,13, 5,   1,10, 4,14,13,  -1, 1,12,10,13,  -1,-1,15,-1, 0},
+		{16,-1, 7, 8,-1,  11, 4,14, 9,-1,   6, 4,14,12, 8,  -1, 1,14,13,15,  -1,-1, 6, 9,-1}
+	}
 };

@@ -51,4 +51,5 @@ private:
     static int _specialRooms[11][81];
     static int _clusters[15][4][9];
     static int _specialClusters[2][9];
+    static int _dungeonLayouts[10][5][25];
 };

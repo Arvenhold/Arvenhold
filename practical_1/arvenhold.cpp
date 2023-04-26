@@ -55,7 +55,7 @@ void GameScene::load() {
     {
         cerr << "Failed to load spritesheet!" << endl;
     }
-	ls::generateDungeon(1);
+	ls::generateDungeon(10);
 	_ents.list.push_back(player);
 }
 

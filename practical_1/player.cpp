@@ -25,5 +25,5 @@ Player::Player()
 	: _speed(5.0f), _hp(50), _armour(2), Entity(make_unique<CircleShape>(25.0f)) {
 	_shape->setFillColor(Color::Magenta);
 	_shape->setOrigin(Vector2f(25.0f, 25.0f));
-	setPosition({(95*128 - 64),(116*128 - 64)});
+	setPosition({(95*8 - 64),(116*8 - 64)});
 }
