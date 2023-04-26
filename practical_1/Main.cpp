@@ -5,6 +5,7 @@
 #include "player.h"
 #include "arvenhold.h"
 #include "system_renderer.h"
+#include "system_resources.h"
 
 using namespace std;
 using namespace sf;
