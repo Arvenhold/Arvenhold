@@ -13,8 +13,8 @@ extern std::shared_ptr<Scene> activeScene;
 
 extern std::shared_ptr<Player> player;
 
-extern sf::Texture roomSpriteSheet;
-extern sf::Texture wizardSprite;
+//extern sf::Texture roomSpriteSheet;
+//extern sf::Texture wizardSprite;
 
 class MenuScene : public Scene {
 private:

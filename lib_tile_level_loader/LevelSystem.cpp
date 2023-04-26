@@ -187,7 +187,7 @@ void LevelSystem::Render() {																		//
 
 
 // ######################################
-// ## SEMI-SUDO-RANDOM-GENERATION FUN! ##
+// ## SEMI-PSEUDO-RANDOM-GENERATION FUN! ##
 // ######################################
 
 // These should probably go on their own someplace else
