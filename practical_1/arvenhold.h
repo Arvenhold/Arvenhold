@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <LevelSystem.h>
 #include "system_renderer.h"
+#include "system_resources.h"
 #include <iostream>
 #include "player.h"
 
@@ -13,8 +14,8 @@ extern std::shared_ptr<Scene> activeScene;
 
 extern std::shared_ptr<Player> player;
 
-extern sf::Texture roomSpriteSheet;
-extern sf::Texture wizardSprite;
+extern std::shared_ptr<sf::Texture> roomSpriteSheet;
+extern std::shared_ptr<sf::Texture> wizardSprite;
 
 class MenuScene : public Scene {
 private:

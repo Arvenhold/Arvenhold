@@ -9,8 +9,8 @@ shared_ptr<Scene> activeScene;
 
 shared_ptr<Player> player(new Player());
 
-Texture roomSpriteSheet;
-Texture wizardSprite;
+shared_ptr<Texture> roomSpriteSheet;
+shared_ptr<Texture> wizardSprite;
 
 void MenuScene::update(double dt) {
 	if (Keyboard::isKeyPressed(Keyboard::Space)) {
@@ -46,16 +46,13 @@ void GameScene::update(double dt) {
 }
 
 void GameScene::load() {
-	if (!roomSpriteSheet.loadFromFile("res/img/dungeon_tiles.png"))
-    {
-        cerr << "Failed to load spritesheet!" << endl;
-    }
 
-    if (!wizardSprite.loadFromFile("res/img/wizard.png"))
-    {
-        cerr << "Failed to load spritesheet!" << endl;
-    }
+	roomSpriteSheet = Resources::get<sf::Texture>("dungeon_tiles.png");
+
+	wizardSprite = Resources::get<sf::Texture>("wizard.png");
+
 	ls::generateDungeon(10);
+
 	_ents.list.push_back(player);
 }
 
