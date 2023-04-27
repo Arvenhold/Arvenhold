@@ -15,8 +15,10 @@ const int gameHeight = 1080;
 
 //unique_ptr<Player> player(new Player());
 
-Texture roomSpriteSheet;
-Texture wizardSprite;
+//Texture roomSpriteSheet;
+//Texture wizardSprite;
+
+shared_ptr<Texture> wizard;
 
 
 std::vector<b2Body*> bodies;
@@ -52,14 +54,16 @@ void init() {
     // Construct a world, which holds and simulates the physics bodies.
     world = new b2World(gravity);
 
-    if (!roomSpriteSheet.loadFromFile("res/img/dungeon_tiles.png"))
+    /*if (!roomSpriteSheet.loadFromFile("res/img/dungeon_tiles.png"))
     {
         cerr << "Failed to load spritesheet!" << endl;
     }
     if (!wizardSprite.loadFromFile("res/img/wizard.png"))
     {
         cerr << "Failed to load spritesheet!" << endl;
-    }
+    }*/
+
+    wizard = Resources::get<sf::Texture>("wizard.png");
 
     for (int i = 1; i < 11; i++)
     {
@@ -67,7 +71,7 @@ void init() {
         s->setPosition(Vector2f(i*(gameWidth / 12.f), (gameHeight / 2.f)));
         //s->setSize(Vector2f(8.0f, 16.0f));
         s->setOrigin(Vector2f(16.0f, 16.0f));
-        s->setTexture(wizardSprite);
+        s->setTexture(*wizard);
         //s->setScale(Vector2f(0.5f,0.5f));
         //s->setFillColor(Color::White);
         sprites.push_back(s);
