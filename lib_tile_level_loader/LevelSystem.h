@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 #include "../lib_maths/maths.h"
-#include "../practical_1/system_renderer.h"
+#include "../engine/system_renderer.h"
 
 #define ls LevelSystem
 
@@ -16,7 +16,7 @@ public:
 
     static void generateDungeon(int level);
 
-    static void Render();
+    static void Render(sf::RenderWindow& window);
     static sf::Color getColor(TILE t);
     static void setColor(TILE t, sf::Color c);
     //Get Tile at grid coordinate
