@@ -9,10 +9,8 @@ shared_ptr<Scene> activeScene;
 
 shared_ptr<Player> player(new Player());
 
-
 shared_ptr<Texture> roomSpriteSheet;
 shared_ptr<Texture> wizardSprite;
-
 
 void MenuScene::update(double dt) {
 	if (Keyboard::isKeyPressed(Keyboard::Space)) {

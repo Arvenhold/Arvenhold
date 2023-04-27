@@ -4,6 +4,7 @@
 #include <memory>
 #include "system_renderer.h"
 
+
 class Entity {
 protected:
 	std::unique_ptr<sf::Shape> _shape;
