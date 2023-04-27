@@ -3,6 +3,7 @@
 #include "../arvenhold.h"
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
+#include "../components/cmp_shape.h"
 
 using namespace std;
 using namespace sf;
@@ -22,9 +23,16 @@ void DungeonScene::Update(const double& dt)
 
 void DungeonScene::Load() 
 {
+
+	cout << " Scene Dungeon Load" << endl;
+
 	player = makeEntity();
 	
+	player->setPosition(Vector2f(20.0f,20.0f));
 
+	auto s = player->addComponent<ShapeComponent>();
+	s->getShape().setFillColor(Color::Magenta);
+	s->getShape().setOrigin(Vector2f(25.0f, 25.0f));
 
 	/*roomSpriteSheet = Resources::get<sf::Texture>("dungeon_tiles.png");
 
@@ -32,9 +40,7 @@ void DungeonScene::Load()
 
 	ls::generateDungeon(10);
 
-
 	setLoaded(true);
-	//_ents.list.push_back(player);
 }
 
 void DungeonScene::UnLoad()

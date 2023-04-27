@@ -13,7 +13,36 @@ using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
 
+static bool loading = false;
+static float loadingspinner = 0.f;
+static float loadingTime;
+
 static RenderWindow* _window;
+
+void Loading_update(float dt, const Scene* const scn) {
+    //  cout << "Eng: Loading Screen\n";
+    if (scn->isLoaded()) {
+        cout << "Eng: Exiting Loading Screen\n";
+        loading = false;
+    }
+    else {
+        loadingspinner += 220.0f * dt;
+        loadingTime += dt;
+    }
+}
+void Loading_render() {
+    // cout << "Eng: Loading Screen Render\n";
+    static CircleShape octagon(80, 8);
+    octagon.setOrigin(Vector2f(80, 80));
+    octagon.setRotation(degrees(loadingspinner));
+    octagon.setPosition(Vcast<float>(Engine::getWindowSize()) * .5f);
+    octagon.setFillColor(Color(255, 255, 255, min(255.f, 40.f * loadingTime)));
+    //static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
+    //t.setFillColor(Color(255, 255, 255, min(255.f, 40.f * loadingTime)));
+    //t.setPosition(Vcast<float>(Engine::getWindowSize()) * (0.4f, 0.3f));
+    //Renderer::queue(&t);
+    Renderer::queue(&octagon);
+}
 
 float frametimes[256] = {};
 uint8_t ftc = 0;
@@ -34,14 +63,20 @@ void Engine::Update() {
         }
     }
 
-    if (_activeScene != nullptr) {
+    if (loading) {
+        Loading_update(dt, _activeScene);
+    }
+    else if (_activeScene != nullptr) {
         Physics::update(dt);
         _activeScene->Update(dt);
     }
 }
 
 void Engine::Render(RenderWindow& window) {
-    if (_activeScene != nullptr) {
+    if (loading) {
+        Loading_render();
+    }
+    else if (_activeScene != nullptr) {
         _activeScene->Render();
     }
 
@@ -96,6 +131,14 @@ void Engine::ChangeScene(Scene* s) {
 
     if (old != nullptr) {
         old->UnLoad(); // todo: Unload Async
+    }
+
+    if (!s->isLoaded()) {
+        cout << "Eng: Entering Loading Screen\n";
+        loadingTime = 0;
+        _activeScene->LoadAsync();
+        //_activeScene->Load();
+        loading = true;
     }
 }
 

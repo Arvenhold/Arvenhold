@@ -173,13 +173,12 @@ LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {												//
     return getTile(Vector2ul((v - _offset) / (_tileSize)));											//
 }																									//
 																									//
-void LevelSystem::Render(RenderWindow& window) {																		//
+void LevelSystem::Render(RenderWindow& window) {													//
     for (size_t i = 0; i < _width * _height; ++i) 													//
 	{																								//
 		if (_tiles[i] != EMPTY)																		//
 		{																							//
-			//Renderer::queue(_sprites[i].get());	
-			window.draw(*_sprites[i].get());
+			Renderer::queue(_sprites[i].get());														//
 		}																							//
     }																								//
 }																									//
