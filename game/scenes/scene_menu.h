@@ -7,11 +7,15 @@ private:
 	//sf::Text text;
 
 public:
-	MenuScene() = default;
+	/*MenuScene() = default;
 
-	~MenuScene() override = default;
+	~MenuScene() override = default;*/
+
+	void Render() override;
 
 	void Update(const double& dt) override;
 
 	void Load() override;
+
+	void UnLoad() override;
 };

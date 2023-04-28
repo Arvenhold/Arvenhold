@@ -5,41 +5,12 @@
 using namespace std;
 using namespace sf;
 
-// TO GET RID OF ONCE ENTITY COMPONENTS IS IMPLEMENTED
-//========================================================================================================================================================================
-std::unique_ptr<LevelSystem::TILE[]> LevelSystem::_tiles;																												//
-size_t LevelSystem::_width;																																				//
-size_t LevelSystem::_height;																																			//
-Vector2f LevelSystem::_offset(0.0f, 0.0f);																																//
-																																										//
-float LevelSystem::_tileSize(8.f);																																		//
-vector<std::unique_ptr<sf::RectangleShape>> LevelSystem::_sprites;																										//
-																																										//
-std::map<LevelSystem::TILE, sf::Color> LevelSystem::_colours{ {WALL, Color::Color(50,50,50)}, {END, Color::Color(120,120,120)}, {START, Color::Color(0,120,0)} };		//
-																																										//
-sf::Color LevelSystem::getColor(LevelSystem::TILE t) {																													//
-    auto it = _colours.find(t);																																			//
-    if (it == _colours.end()) {																																			//
-        _colours[t] = Color::Transparent;																																//
-    }																																									//
-    return _colours[t];																																					//
-}																																										//
-																																										//
-void LevelSystem::setColor(LevelSystem::TILE t, sf::Color c) {																											//
-    auto it = _colours.find(t);																																			//
-    if (it != _colours.end())																																			//
-    {																																									//
-        _colours[t] = c;																																				//
-    }																																									//
-}																																										//
-//========================================================================================================================================================================
-
-void LevelSystem::generateDungeon(int level)
+std::vector<int> LevelSystem::generateDungeon(int level)
 {
-	
 
-	std::vector<TILE> temp_tiles;
-	temp_tiles.clear();
+	std::vector<int> tils;
+
+	tils.clear();
 
 	srand(time(NULL));
 
@@ -79,111 +50,35 @@ void LevelSystem::generateDungeon(int level)
 						{
 							if (layout[dCol + dRow * 5] > 15)
 							{
-								if (layout[dCol + dRow * 5] == -1 || tCluster[cCol + cRow * 3] == -1 || _specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9] == -1)
+								if (layout[dCol + dRow * 5] == -1 || tCluster[cCol + cRow * 3] == -1)
 								{
-									temp_tiles.push_back(EMPTY);
-								}
-								else if (_specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9] == 72 || _specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9] == 73 || _specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9] == 74 || _specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9] == 85 || _specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9] == 86)
-								{
-									temp_tiles.push_back(END);
+									tils.push_back(-1);
 								}
 								else
 								{
-									temp_tiles.push_back(WALL);
+									tils.push_back(_specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9]);
 								}
 							}
 							else
 							{
-								if (layout[dCol + dRow * 5] == -1 || tCluster[cCol + cRow * 3] == -1 || _rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == -1)
+								if (layout[dCol + dRow * 5] == -1 || tCluster[cCol + cRow * 3] == -1 )
 								{
-									temp_tiles.push_back(EMPTY);
-								}
-								else if (_rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == 72 || _rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == 73 || _rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == 74 || _rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == 85 || _rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == 86)
-								{
-									temp_tiles.push_back(END);
-								}
-								else if (_rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9] == 84)
-								{
-									temp_tiles.push_back(START);
+									tils.push_back(-1);
 								}
 								else
 								{
-									temp_tiles.push_back(WALL);
+									tils.push_back(_rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9]);
 								}
 							}
-						}
+						}					
 					}
 				}
 			}
 		}
 	}
 
-	int count = temp_tiles.size();
-
-	cout << temp_tiles.size() << endl;
-	_tiles = std::make_unique<TILE[]>(count);
-	_width = 5*27; //set static class vars
-	_height = 5*27;
-	std::copy(temp_tiles.begin(), temp_tiles.end(), &_tiles[0]);
-	std::cout << "Level " << level << " Loaded. " << 27 << "x" << 27 << std::endl;
-	buildSprites();
+	return tils;
 }
-
-// TO GET RID OF ONCE ENTITY COMPONENTS IS IMPLEMENTED
-//====================================================================================================
-int LevelSystem::getHeight()																		//
-{																									//
-    return _height;																					//
-}																									//
-																									//
-int LevelSystem::getWidth()																			//
-{																									//
-    return _width;																					//
-}																									//
-																									//
-void LevelSystem::buildSprites() {																	//
-    _sprites.clear();																				//
-    for (size_t y = 0; y < LevelSystem::getHeight(); ++y) {											//
-        for (size_t x = 0; x < LevelSystem::getWidth(); ++x) {										//
-            auto s = make_unique<RectangleShape>();													//
-            s->setPosition(getTilePosition({ x, y }));												//
-            s->setSize(Vector2f(_tileSize, _tileSize));												//
-            s->setFillColor(getColor(getTile({ x, y })));											//
-            _sprites.push_back(move(s));															//
-        }																							//
-    }																								//
-}																									//
-																									//
-Vector2f LevelSystem::getTilePosition(Vector2ul p) {												//
-    return (Vector2f(p.x, p.y) * _tileSize);														//
-}																									//
-																									//
-LevelSystem::TILE LevelSystem::getTile(Vector2ul p) {												//
-    if (p.x > _width || p.y > _height) {															//
-        throw string("Tile out of range: ") + to_string(p.x) + "," + to_string(p.y) + ")";			//
-    }																								//
-    return _tiles[(p.y * _width) + p.x];															//
-}																									//
-																									//
-LevelSystem::TILE LevelSystem::getTileAt(Vector2f v) {												//
-    auto a = v - _offset;																			//
-    if (a.x < 0 || a.y < 0) {																		//
-        throw string("Tile out of range ");															//
-    }																								//
-    return getTile(Vector2ul((v - _offset) / (_tileSize)));											//
-}																									//
-																									//
-void LevelSystem::Render(RenderWindow& window) {													//
-    for (size_t i = 0; i < _width * _height; ++i) 													//
-	{																								//
-		if (_tiles[i] != EMPTY)																		//
-		{																							//
-			Renderer::queue(_sprites[i].get());														//
-		}																							//
-    }																								//
-}																									//
-//====================================================================================================
-
 
 // ######################################
 // ## SEMI-PSEUDO-RANDOM-GENERATION FUN! ##

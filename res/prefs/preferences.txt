@@ -1,0 +1,9 @@
+fullscreen: 0/1
+resolution: 1080
+controller: 0/1
+up: w
+left: a
+down: s
+right: d
+spell: left-click
+potion: right-click

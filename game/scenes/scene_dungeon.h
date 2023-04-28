@@ -12,5 +12,6 @@ public:
 	void Update(const double& dt) override;
 	void Render() override;
 	void Load() override;
+	void generateDungeonEntities(std::vector<int> t);
 	void UnLoad() override;
 };
