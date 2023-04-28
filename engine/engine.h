@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <ecm.h>
+#include "Box2D/Box2D.h"
 #include <future>
 #include <maths.h>
 #include <mutex>

@@ -2,9 +2,14 @@
 #include <fstream>
 #include <iostream>
 
+// ########################################
+// ## SEMI-PSEUDO-RANDOM-GENERATION FUN! ##
+// ########################################
+
 using namespace std;
 using namespace sf;
 
+// Generate dungeon blueprint
 std::vector<int> LevelSystem::generateDungeon(int level)
 {
 
@@ -79,12 +84,6 @@ std::vector<int> LevelSystem::generateDungeon(int level)
 
 	return tils;
 }
-
-// ######################################
-// ## SEMI-PSEUDO-RANDOM-GENERATION FUN! ##
-// ######################################
-
-// These should probably go on their own someplace else
 
 // Normal rooms
 int LevelSystem::_rooms[16][4][81] =
@@ -510,3 +509,5 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{16,-1, 7, 8,-1,  11, 4,14, 9,-1,   6, 4,14,12, 8,  -1, 1,14,13,15,  -1,-1, 6, 9,-1}
 	}
 };
+
+// Not enough layouts. Must make more...
