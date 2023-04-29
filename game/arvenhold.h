@@ -7,3 +7,6 @@
 extern DungeonScene dungeonScene;
 extern MenuScene menuScene;
 extern OverGroundScene ogScene;
+
+extern int gameWidth;
+extern int gameHeight;

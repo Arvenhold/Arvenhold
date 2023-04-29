@@ -1,5 +1,6 @@
 #include "arvenhold.h"
 #include "engine.h"
+#include "filehandling.h"
 
 using namespace std;
 
@@ -7,6 +8,15 @@ DungeonScene dungeonScene;
 MenuScene menuScene;
 //OverGroundScene ogScene;
 
+int gameWidth;
+int gameHeight;
+
 int main() {
-	Engine::Start(1920, 1080, "Arvenhold", &menuScene);
+	FileHandler::load(gameHeight, gameWidth);
+
+
+	cout << gameWidth << endl;
+	Engine::Start(gameWidth, gameHeight, "Arvenhold", &menuScene);
+
+	FileHandler::save(gameHeight, gameWidth);
 }

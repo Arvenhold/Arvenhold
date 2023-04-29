@@ -4,6 +4,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include "../components/cmp_sprite.h"
+#include "../components/cmp_death.h"
 #include <system_resources.h>
 
 using namespace std;
@@ -49,6 +50,9 @@ void DungeonScene::Load()
 	s->setTexure(Resources::get<Texture>("wizard.png"));
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 	s->getSprite().setScale({ 2, 2 });
+
+	auto p_d = player->addComponent<DeathComponent>();
+	p_d->setType(true);
 	//s->getSprite().setTextureRect(sf::IntRect(Vector2(16, 16), Vector2(32, 32)));
 
 	
