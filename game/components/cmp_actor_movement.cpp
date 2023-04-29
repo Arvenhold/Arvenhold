@@ -2,13 +2,21 @@
 #include <LevelSystem.h>
 #include <engine.h>
 #include <iostream>
+
 using namespace sf;
 using namespace std;
 
-void ActorMovementComponent::update(double dt) {}
+void ActorMovementComponent::update(double dt) {
+    PhysicsComponent::update(dt);
+}
 
-ActorMovementComponent::ActorMovementComponent(Entity* p)
-    : _speed(100.0f), Component(p) {}
+ActorMovementComponent::ActorMovementComponent(Entity* p, const b2PolygonShape Shape)
+    : _speed(100.0f), PhysicsComponent(p, true, Shape) {
+    _body->SetSleepingAllowed(false);
+    _body->SetFixedRotation(true);
+    //Bullet items have higher-res collision detection
+    _body->SetBullet(true);
+}
 
 bool ActorMovementComponent::validMove(const sf::Vector2f& pos) {
     //return (LevelSystem::getTileAt(pos) != LevelSystem::WALL);

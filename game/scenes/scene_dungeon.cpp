@@ -7,6 +7,7 @@
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_enemy_ai.h"
 #include <system_resources.h>
+#include "../components/cmp_ai_steering.h"
 
 using namespace std;
 using namespace sf;
@@ -46,14 +47,18 @@ void DungeonScene::Load()
 	pillarPos.clear();
 	floors.clear();
 
-	level = 10;
+	level = 1;
+
+	
 
 	auto t = ls::generateDungeon(level);
-
-	generateDungeonEntities(t);
-	player = makeEntity();
 	
+	generateDungeonEntities(t);
+
+	player = makeEntity();
 	player->setPosition(startPos);
+
+	generateEnemies();
 
 	auto s = player->addComponent<SpriteComponent>();
 	s->setTexure(Resources::get<Texture>("wizard.png"));
@@ -64,10 +69,10 @@ void DungeonScene::Load()
 	b2PolygonShape Shape;
 
 	b2Vec2 vertices[4];
-	vertices[0].Set(-1.0f,-1.0f);
-	vertices[1].Set( 0.0f,-2.0f);
-	vertices[2].Set( 1.0f,-1.0f);
-	vertices[3].Set( 0.0f, 0.0f);
+	vertices[0].Set(-1.0f, -1.0f);
+	vertices[1].Set(0.0f, -2.0f);
+	vertices[2].Set(1.0f, -1.0f);
+	vertices[3].Set(0.0f, 0.0f);
 
 	Shape.Set(vertices, 4);
 
@@ -140,7 +145,10 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 			}
 		}
 	}
+}
 
+void DungeonScene::generateEnemies()
+{
 	srand(time(NULL));
 
 	for (int i = 0; i < floors.size(); i++)
@@ -154,15 +162,15 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 			{
 				auto enemy = makeEntity();
 
-				enemy->setPosition({ floors[i].x , floors[i].y+64});
+				enemy->setPosition({ floors[i].x , floors[i].y + 64 });
 
 				int enemyType = (rand() % 100) + 1;
 
 				auto s = enemy->addComponent<SpriteComponent>();
 
 				if (enemyType < (100 - level * 5))		s->setTexure(Resources::get<Texture>("skelly.png"));
-				else if (enemyType < (100-level*3))		s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
-				else if (enemyType < (100-level*1.5f))	s->setTexure(Resources::get<Texture>("skelly-ranger.png"));
+				else if (enemyType < (100 - level * 3))		s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
+				else if (enemyType < (100 - level * 1.5f))	s->setTexure(Resources::get<Texture>("skelly-ranger.png"));
 				else									s->setTexure(Resources::get<Texture>("skelly-wizard.png"));
 
 				s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
@@ -178,9 +186,7 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 
 				Shape.Set(vertices, 4);
 
-				enemy->addComponent<PhysicsComponent>(true, Shape);
-
-				//auto a = enemy->addComponent<EnemyAIComponent>();
+				enemy->addComponent<SteeringComponent>(player.get(), Shape);
 			}
 		}
 	}
