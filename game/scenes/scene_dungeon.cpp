@@ -5,9 +5,10 @@
 #include <iostream>
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_player_physics.h"
-#include "../components/cmp_enemy_ai.h"
 #include <system_resources.h>
-#include "../components/cmp_ai_steering.h"
+#include "../components/cmp_state_machine.h"
+#include "../steering_states.h"
+#include "../steering_decisions.h"
 
 using namespace std;
 using namespace sf;
@@ -21,6 +22,8 @@ Vector2f startPos;
 vector<Vector2f> floors;
 
 vector<Vector2f> pillarPos;
+
+b2PolygonShape Shape;
 
 int level;
 
@@ -153,7 +156,7 @@ void DungeonScene::generateEnemies()
 
 	for (int i = 0; i < floors.size(); i++)
 	{
-		if (length(floors[i] - startPos) > 960.0)
+		if (length(floors[i] - startPos) > 1280.0)
 		{
 
 			int spawnChance = (rand() % 100) + 1;
@@ -163,18 +166,6 @@ void DungeonScene::generateEnemies()
 				auto enemy = makeEntity();
 
 				enemy->setPosition({ floors[i].x , floors[i].y + 64 });
-
-				int enemyType = (rand() % 100) + 1;
-
-				auto s = enemy->addComponent<SpriteComponent>();
-
-				if (enemyType < (100 - level * 5))		s->setTexure(Resources::get<Texture>("skelly.png"));
-				else if (enemyType < (100 - level * 3))		s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
-				else if (enemyType < (100 - level * 1.5f))	s->setTexure(Resources::get<Texture>("skelly-ranger.png"));
-				else									s->setTexure(Resources::get<Texture>("skelly-wizard.png"));
-
-				s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
-				s->getSprite().setScale({ 2, 2 });
 
 				b2PolygonShape Shape;
 
@@ -186,7 +177,106 @@ void DungeonScene::generateEnemies()
 
 				Shape.Set(vertices, 4);
 
-				enemy->addComponent<SteeringComponent>(player.get(), Shape);
+				int enemyType = (rand() % 100) + 1;
+				{
+					auto s = enemy->addComponent<SpriteComponent>();
+
+					if (enemyType < (100 - level * 5))
+					{
+						s->setTexure(Resources::get<Texture>("skelly.png"));
+
+						enemy->addComponent<PhysicsComponent>(true, Shape, 175.0f);
+
+						auto sm = enemy->addComponent<StateMachineComponent>();
+						sm->addState("stationary", make_shared<StationaryState>());
+						sm->addState("seek", make_shared<SeekState>(enemy, player));
+						sm->addState("flee", make_shared<FleeState>(enemy, player));
+
+						auto decision = make_shared<DistanceDecision>(
+							player,
+							50.0f,
+							make_shared<FleeDecision>(),
+							make_shared<DistanceDecision>(
+								player,
+								840.0f,
+								make_shared<SeekDecision>(),
+								make_shared<StationaryDecision>()));
+
+						enemy->addComponent<DecisionTreeComponent>(decision);
+					}
+					else if (enemyType < (100 - level * 3))
+					{
+						s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
+
+						enemy->addComponent<PhysicsComponent>(true, Shape, 150.0f);
+
+						auto sm = enemy->addComponent<StateMachineComponent>();
+						sm->addState("stationary", make_shared<StationaryState>());
+						sm->addState("seek", make_shared<SeekState>(enemy, player));
+						sm->addState("flee", make_shared<FleeState>(enemy, player));
+
+						auto decision = make_shared<DistanceDecision>(
+							player,
+							50.0f,
+							make_shared<FleeDecision>(),
+							make_shared<DistanceDecision>(
+								player,
+								840.0f,
+								make_shared<SeekDecision>(),
+								make_shared<StationaryDecision>()));
+
+						enemy->addComponent<DecisionTreeComponent>(decision);
+					}
+					else if (enemyType < (100 - level * 1.5f))
+					{
+						s->setTexure(Resources::get<Texture>("skelly-ranger.png"));
+
+						enemy->addComponent<PhysicsComponent>(true, Shape, 200.0f);
+
+						auto sm = enemy->addComponent<StateMachineComponent>();
+						sm->addState("stationary", make_shared<StationaryState>());
+						sm->addState("seek", make_shared<SeekState>(enemy, player));
+						sm->addState("flee", make_shared<FleeState>(enemy, player));
+
+						auto decision = make_shared<DistanceDecision>(
+							player,
+							300.0f,
+							make_shared<FleeDecision>(),
+							make_shared<DistanceDecision>(
+								player,
+								840.0f,
+								make_shared<SeekDecision>(),
+								make_shared<StationaryDecision>()));
+
+						enemy->addComponent<DecisionTreeComponent>(decision);
+					}
+					else
+					{
+						s->setTexure(Resources::get<Texture>("skelly-wizard.png"));
+
+						enemy->addComponent<PhysicsComponent>(true, Shape, 125.0f);
+
+						auto sm = enemy->addComponent<StateMachineComponent>();
+						sm->addState("stationary", make_shared<StationaryState>());
+						sm->addState("seek", make_shared<SeekState>(enemy, player));
+						sm->addState("flee", make_shared<FleeState>(enemy, player));
+
+						auto decision = make_shared<DistanceDecision>(
+							player,
+							400.0f,
+							make_shared<FleeDecision>(),
+							make_shared<DistanceDecision>(
+								player,
+								840.0f,
+								make_shared<SeekDecision>(),
+								make_shared<StationaryDecision>()));
+
+						enemy->addComponent<DecisionTreeComponent>(decision);
+					}
+
+					s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
+					s->getSprite().setScale({ 2, 2 });
+				}
 			}
 		}
 	}

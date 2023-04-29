@@ -31,6 +31,32 @@ PhysicsComponent::PhysicsComponent(Entity* p, bool dyn, const b2PolygonShape Sha
     }
 }
 
+PhysicsComponent::PhysicsComponent(Entity* p, bool dyn, const b2PolygonShape Shape, float speed)
+    : Component(p), _dynamic(dyn), _speed(speed) {
+
+    b2BodyDef BodyDef;
+
+    // Is Dynamic(moving), or static(Stationary)
+    BodyDef.type = _dynamic ? b2_dynamicBody : b2_staticBody;
+    BodyDef.position = sv2_to_bv2(invert_height(p->getPosition()));
+
+    // Create the body
+    _body = Physics::GetWorld()->CreateBody(&BodyDef);
+    _body->SetActive(true);
+    {
+        b2FixtureDef FixtureDef;
+
+        FixtureDef.shape = &Shape;
+
+        _fixture = _body->CreateFixture(&FixtureDef);
+    }
+}
+
+float PhysicsComponent::getSpeed()
+{
+    return _speed;
+}
+
 void PhysicsComponent::setFriction(float r) { _fixture->SetFriction(r); }
 
 void PhysicsComponent::setMass(float m) { _fixture->SetDensity(m); }
