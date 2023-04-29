@@ -12,4 +12,5 @@ public:
 	void Load() override;
 	void generateDungeonEntities(std::vector<int> t);
 	void UnLoad() override;
+	void DungeonScene::generateEnemies();
 };

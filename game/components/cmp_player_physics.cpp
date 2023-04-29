@@ -29,71 +29,39 @@ bool PlayerPhysicsComponent::isGrounded() const {
     return false;
 }
 
-void PlayerPhysicsComponent::update(double dt) {
+void PlayerPhysicsComponent::update(double dt) 
+{
+    Vector2f direction(0.0f, 0.0f);
 
-    const auto pos = _parent->getPosition();
-
-    //Teleport to start if we fall off map.
-    /*if (pos.y > ls::getHeight() * ls::getTileSize()) {
-        teleport(ls::getTilePosition(ls::findTiles(ls::START)[0]));
-    }*/
-
-    if (Keyboard::isKeyPressed(Keyboard::A) ||
-        Keyboard::isKeyPressed(Keyboard::D)) {
-        // Moving Either Left or Right
-
+    if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
+    {
+        if (Keyboard::isKeyPressed(Keyboard::A)) {
+            direction.x -= 1.0f;
+        }
         if (Keyboard::isKeyPressed(Keyboard::D)) {
-            if (getVelocity().x < _maxVelocity.x)
-                impulse({ (float)(dt * _groundspeed), 0 });
-        }
-        else {
-            if (getVelocity().x > -_maxVelocity.x)
-                impulse({ -(float)(dt * _groundspeed), 0 });
+            direction.x += 1.0f;
         }
     }
-    else {
-        // Dampen X axis movement
-        dampen({ 0.95f, 1.0f });
+    else
+    {
+        dampen({ 0.9f, 1.0f });
     }
 
-    if (Keyboard::isKeyPressed(Keyboard::W) ||
-        Keyboard::isKeyPressed(Keyboard::S)) {
-        // Moving Either Left or Right
-
+    if (Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::W))
+    {
+        if (Keyboard::isKeyPressed(Keyboard::W)) {
+            direction.y -= 1.0f;
+        }
         if (Keyboard::isKeyPressed(Keyboard::S)) {
-            if (getVelocity().y < _maxVelocity.y)
-                impulse({0, (float)(dt * _groundspeed)});
-        }
-        else {
-            if (getVelocity().y > -_maxVelocity.y)
-                impulse({0, -(float)(dt * _groundspeed)});
+            direction.y += 1.0f;
         }
     }
-    else {
-        // Dampen X axis movement
-        dampen({ 1.0f, 0.95f });
+    else
+    {
+        dampen({ 1.0f, 0.9f });
     }
 
-    //// Handle Jump
-    //if (Keyboard::isKeyPressed(Keyboard::Up)) {
-    //    _grounded = isGrounded();
-    //    if (_grounded) {
-    //        setVelocity(Vector2f(getVelocity().x, 0.f));
-    //        teleport(Vector2f(pos.x, pos.y - 2.0f));
-    //        impulse(Vector2f(0, -6.f));
-    //    }
-    //}
-
-    //Are we in air?
-    //if (!_grounded) {
-    //    // Check to see if we have landed yet
-    //    _grounded = isGrounded();
-    //    // disable friction while jumping
-    //    setFriction(0.f);
-    //}
-    //else {
-    //    setFriction(0.1f);
-    //}
+    impulse(normalize(direction) * _groundspeed * (float)dt);
 
     // Clamp velocity.
     auto v = getVelocity();
@@ -104,8 +72,7 @@ void PlayerPhysicsComponent::update(double dt) {
     PhysicsComponent::update(dt);
 }
 
-PlayerPhysicsComponent::PlayerPhysicsComponent(Entity* p,
-    const b2PolygonShape Shape)
+PlayerPhysicsComponent::PlayerPhysicsComponent(Entity* p, const b2PolygonShape Shape)
     : PhysicsComponent(p, true, Shape) {
     //_size = sv2_to_bv2(size, true);
     _maxVelocity = Vector2f(400.f, 400.f);
