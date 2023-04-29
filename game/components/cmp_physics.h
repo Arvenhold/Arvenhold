@@ -9,9 +9,11 @@ protected:
 	b2Body* _body;
 	const bool _dynamic;
 	b2Fixture* _fixture;
+	float _speed;
 
 public:
 	PhysicsComponent(Entity* p, bool dyn, const b2PolygonShape Shape);
+	PhysicsComponent(Entity* p, bool dyn, const b2PolygonShape Shape, float speed);
 
 	b2Fixture* const getFixture() const;
 	bool isTouching(const PhysicsComponent& pc) const;
@@ -27,5 +29,6 @@ public:
 	void dampen(const sf::Vector2f& s);
 	void setVelocity(const sf::Vector2f& v);
 	void teleport(const sf::Vector2f& v);
+	float getSpeed();
 	~PhysicsComponent() override;
 };
