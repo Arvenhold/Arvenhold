@@ -4,9 +4,7 @@
 
 class DungeonScene : public Scene {
 private:
-	/*sf::Text text;
-	sf::Clock scoreClock;
-	void respawn();*/
+	static b2Vec2 DungeonScene::_polygons[120][6];
 
 public:
 	void Update(const double& dt) override;
