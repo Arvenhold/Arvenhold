@@ -85,8 +85,8 @@ void DungeonScene::Load()
 	//s->getSprite().setColor(Color(255, 155, 155));
 
 
-	auto p_d = player->addComponent<DeathComponent>();
-	p_d->setType(true);
+	//auto p_d = player->addComponent<DeathComponent>();
+	//p_d->setType(true);
 
 	//s->getSprite().setTextureRect(sf::IntRect(Vector2(16, 16), Vector2(32, 32)));
 
@@ -217,6 +217,17 @@ void DungeonScene::generateEnemies()
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
+
+						auto eh = enemy->addComponent<DeathComponent>();
+						eh->setTarget(player);
+
+						
+
+						// enemy add component player hit (component needs distance to player float
+
+						// distance between player and enemy needs two entities passed in, enemy and player
+
+						// for the update cycle, check if distance is less than 0, if so kill
 
 						auto decision = make_shared<DistanceDecision>(
 							player,

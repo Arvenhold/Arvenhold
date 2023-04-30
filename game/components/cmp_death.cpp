@@ -6,11 +6,16 @@
 using namespace sf;
 using namespace std;
 
-DeathComponent::DeathComponent(Entity *p)
-	: Component(p), _isPlayer(false){}
+DeathComponent::DeathComponent(Entity *p /*, std::shared_ptr<Entity> player*/)
+	: Component(p), _isPlayer(false)/*, _player(player)*/ {}
 
 void DeathComponent::update(double dt) {
-	kill();
+
+    //get distance to player
+
+    if (_parent->getPosition().x - _player->getPosition().x < 25.0f && _parent->getPosition().y -_player->getPosition().y < 25.0f) {
+        kill();
+    }
 }
 
 void DeathComponent::render() {
@@ -32,3 +37,6 @@ void DeathComponent::setType(bool type) {
 	_isPlayer = type;
 }
 
+void DeathComponent::setTarget(std::shared_ptr<Entity> player) {
+	_player = player;
+}
