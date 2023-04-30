@@ -5,7 +5,7 @@ using namespace std;
 
 DungeonScene dungeonScene;
 MenuScene menuScene;
-//OverGroundScene ogScene;
+OverGroundScene ogScene;
 
 int main() {
 

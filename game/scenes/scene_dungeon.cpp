@@ -15,9 +15,13 @@ using namespace sf;
 
 static shared_ptr<Entity> player;
 
+static shared_ptr<Entity> boss;
+
 View view;
 
 Vector2f startPos;
+
+Vector2f bossPos;
 
 vector<Vector2f> floors;
 
@@ -35,10 +39,19 @@ void DungeonScene::Update(const double& dt)
 	}
 	else
 	{
-		player->update(dt);
-		Scene::Update(dt);
-		view.setCenter(player.get()->getPosition());
-		Engine::GetWindow().setView(view);
+		auto pPos = player->getPosition();
+
+		if (pPos.x < startPos.x + 48 && pPos.x > startPos.x - 48 && pPos.y > startPos.y + 144 && pPos.y < startPos.y + 160)
+		{
+			Engine::ChangeScene(&ogScene);
+		}
+		else
+		{
+			player->update(dt);
+			Scene::Update(dt);
+			view.setCenter(player.get()->getPosition());
+			Engine::GetWindow().setView(view);
+		}
 	}
 }
 
@@ -67,6 +80,7 @@ void DungeonScene::Load()
 	s->setTexure(Resources::get<Texture>("wizard.png"));
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 	s->getSprite().setScale({ 2, 2 });
+	//s->getSprite().setColor(Color(255, 155, 155));
 	//s->getSprite().setTextureRect(sf::IntRect(Vector2(16, 16), Vector2(32, 32)));
 
 	b2PolygonShape Shape;
@@ -93,7 +107,7 @@ void DungeonScene::Load()
 		s->getSprite().setScale({ 2, 2 });
 	}
 
-	view.reset(FloatRect({ 100, 100 }, { 1920, 1080 }));
+	view.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
 
 	Engine::GetWindow().setView(view);
 
@@ -144,6 +158,11 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 				else
 				{
 					floors.push_back(Vector2f(j * 128, (i - 1) * 128));
+				}
+
+				if (t[i * 135 + j] == 118)
+				{
+					bossPos = Vector2f(j * 128, (i - 1) * 128);
 				}
 			}
 		}
@@ -280,11 +299,50 @@ void DungeonScene::generateEnemies()
 			}
 		}
 	}
+
+	boss = makeEntity();
+
+	boss->setPosition(bossPos);
+
+	b2PolygonShape Shape;
+
+	b2Vec2 vertices[4];
+	vertices[0].Set(-2.0f, -2.0f);
+	vertices[1].Set(0.0f, -4.0f);
+	vertices[2].Set(2.0f, -2.0f);
+	vertices[3].Set(0.0f, 0.0f);
+
+	Shape.Set(vertices, 4);
+
+	boss->addComponent<PhysicsComponent>(true, Shape, 100.0f);
+
+	auto s = boss->addComponent<SpriteComponent>();
+	s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
+	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
+	s->getSprite().setScale({ 4, 4 });
+
+	auto sm = boss->addComponent<StateMachineComponent>();
+	sm->addState("stationary", make_shared<StationaryState>());
+	sm->addState("seek", make_shared<SeekState>(boss, player));
+	sm->addState("flee", make_shared<FleeState>(boss, player));
+
+	auto decision = make_shared<DistanceDecision>(
+		player,
+		50.0f,
+		make_shared<FleeDecision>(),
+		make_shared<DistanceDecision>(
+			player,
+			1280.0f,
+			make_shared<SeekDecision>(),
+			make_shared<StationaryDecision>()));
+
+	boss->addComponent<DecisionTreeComponent>(decision);
 }
 
 void DungeonScene::UnLoad()
 {
 	player.reset();
+	boss.reset();
 	floors.clear();
 	pillarPos.clear();
 	Scene::UnLoad();
