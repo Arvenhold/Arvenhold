@@ -10,6 +10,7 @@
 #include "../components/cmp_state_machine.h"
 #include "../steering_states.h"
 #include "../steering_decisions.h"
+#include "../components/cmp_spell.h"
 
 using namespace std;
 using namespace sf;
@@ -17,6 +18,8 @@ using namespace sf;
 static shared_ptr<Entity> player;
 
 static shared_ptr<Entity> boss;
+
+static shared_ptr<Entity> ui;
 
 View view;
 
@@ -63,6 +66,7 @@ void DungeonScene::Load()
 
 	pillarPos.clear();
 	floors.clear();
+	enemies.clear();
 
 	level = 1;
 
@@ -75,6 +79,8 @@ void DungeonScene::Load()
 	player = makeEntity();
 	player->setPosition(startPos);
 
+	player->addTag("player");
+
 	generateEnemies();
 
 	auto s = player->addComponent<SpriteComponent>();
@@ -84,6 +90,14 @@ void DungeonScene::Load()
 
 	//s->getSprite().setColor(Color(255, 155, 155));
 
+	ui = makeEntity();
+	//ui->addComponent<PlayerTrackingComponent>({0.f,-32.f});
+	{
+		auto sh = ui->addComponent<ShapeComponent>();
+		sh->setShape<sf::RectangleShape>(Vector2f(40.f, 10.f));
+		sh->getShape().setFillColor(Color::Green);
+		sh->getShape().setOrigin(Vector2f(20.f, 50.f));
+	}
 
 	//auto p_d = player->addComponent<DeathComponent>();
 	//p_d->setType(true);
@@ -94,13 +108,15 @@ void DungeonScene::Load()
 
 	b2Vec2 vertices[4];
 	vertices[0].Set(-1.0f, -1.0f);
-	vertices[1].Set(0.0f, -2.0f);
+	vertices[1].Set(0.0f, -1.0f);
 	vertices[2].Set(1.0f, -1.0f);
 	vertices[3].Set(0.0f, 0.0f);
 
 	Shape.Set(vertices, 4);
 
 	player->addComponent<PlayerPhysicsComponent>(Shape);
+
+	player->addComponent<SpellComponent>(15.0f);
 
 	for (int i = 0; i < pillarPos.size(); i++)
 	{
@@ -114,7 +130,18 @@ void DungeonScene::Load()
 		s->getSprite().setScale({ 2, 2 });
 	}
 
+	ui = makeEntity();
+	//ui->addComponent<PlayerTrackingComponent>({0.f,-32.f});
+	{
+		auto sh = ui->addComponent<ShapeComponent>();
+		sh->setShape<sf::RectangleShape>(Vector2f(40.f, 10.f));
+		sh->getShape().setFillColor(Color::Green);
+		sh->getShape().setOrigin(Vector2f(20.f, 50.f));
+	}
+
 	view.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
+
+	view.setCenter(player.get()->getPosition());
 
 	Engine::GetWindow().setView(view);
 
@@ -161,9 +188,19 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 					Shape.Set(_polygons[t[i * 135 + j]], 6);
 
 					tile->addComponent<PhysicsComponent>(false, Shape);
+
+					if (t[i * 135 + j] != 83 && t[i * 135 + j] != 95)
+					{
+						tile->addTag("wall");
+					}
+					else
+					{
+						tile->addTag("pillar");
+					}
 				}
 				else
 				{
+					tile->addTag("floor");
 					floors.push_back(Vector2f(j * 128, (i - 1) * 128));
 				}
 
@@ -191,15 +228,17 @@ void DungeonScene::generateEnemies()
 			{
 				auto enemy = makeEntity();
 
+				enemy->addTag("enemy");
+
 				enemy->setPosition({ floors[i].x , floors[i].y + 64 });
 
 				b2PolygonShape Shape;
 
 				b2Vec2 vertices[4];
-				vertices[0].Set(-1.0f, -1.0f);
-				vertices[1].Set(0.0f, -2.0f);
-				vertices[2].Set(1.0f, -1.0f);
-				vertices[3].Set(0.0f, 0.0f);
+				vertices[0].Set(-0.5f, -0.5f);
+				vertices[1].Set(0.0f, -1.0f);
+				vertices[2].Set(0.5f, 0.5f);
+				vertices[3].Set(0.0f, 1.0f);
 
 				Shape.Set(vertices, 4);
 
@@ -314,6 +353,7 @@ void DungeonScene::generateEnemies()
 					s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 					s->getSprite().setScale({ 2, 2 });
 				}
+				enemies.push_back(enemy);
 			}
 		}
 	}
@@ -359,6 +399,7 @@ void DungeonScene::generateEnemies()
 
 void DungeonScene::UnLoad()
 {
+	enemies.clear();
 	player.reset();
 	boss.reset();
 	floors.clear();
@@ -370,7 +411,7 @@ void DungeonScene::Render() {
 
 	//Renderer::queue(&text);
 	//ls::Render(Engine::GetWindow());
-	//player->Render();
+	ui->render();
 	Scene::Render();
 }
 
