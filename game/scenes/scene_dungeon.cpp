@@ -118,6 +118,8 @@ void DungeonScene::Load()
 
 	player->addComponent<SpellComponent>(15.0f);
 
+	auto pillarSprite = Resources::get<Texture>("pillar.png");
+
 	for (int i = 0; i < pillarPos.size(); i++)
 	{
 		auto pillar = makeEntity();
@@ -125,7 +127,7 @@ void DungeonScene::Load()
 		pillar->setPosition(pillarPos[i]);
 
 		auto s = pillar->addComponent<SpriteComponent>();
-		s->setTexure(Resources::get<Texture>("pillar.png"));
+		s->setTexure(pillarSprite);
 		s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 		s->getSprite().setScale({ 2, 2 });
 	}
@@ -217,6 +219,11 @@ void DungeonScene::generateEnemies()
 {
 	srand(time(NULL));
 
+	auto skellington = Resources::get<Texture>("skelly.png");
+	auto skellWarrior = Resources::get<Texture>("skelly-warrior.png");
+	auto skellRanger = Resources::get<Texture>("skelly-ranger.png");
+	auto skellWizard = Resources::get<Texture>("skelly-wizard.png");
+
 	for (int i = 0; i < floors.size(); i++)
 	{
 		if (length(floors[i] - startPos) > 1280.0)
@@ -248,7 +255,7 @@ void DungeonScene::generateEnemies()
 
 					if (enemyType < (100 - level * 5))
 					{
-						s->setTexure(Resources::get<Texture>("skelly.png"));
+						s->setTexure(skellington);
 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 175.0f);
 
@@ -282,7 +289,7 @@ void DungeonScene::generateEnemies()
 					}
 					else if (enemyType < (100 - level * 3))
 					{
-						s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
+						s->setTexure(skellWarrior);
 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 150.0f);
 
@@ -305,7 +312,7 @@ void DungeonScene::generateEnemies()
 					}
 					else if (enemyType < (100 - level * 1.5f))
 					{
-						s->setTexure(Resources::get<Texture>("skelly-ranger.png"));
+						s->setTexure(skellRanger);
 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 200.0f);
 
@@ -328,7 +335,7 @@ void DungeonScene::generateEnemies()
 					}
 					else
 					{
-						s->setTexure(Resources::get<Texture>("skelly-wizard.png"));
+						s->setTexure(skellWizard);
 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 125.0f);
 
@@ -375,7 +382,7 @@ void DungeonScene::generateEnemies()
 	boss->addComponent<PhysicsComponent>(true, Shape, 100.0f);
 
 	auto s = boss->addComponent<SpriteComponent>();
-	s->setTexure(Resources::get<Texture>("skelly-warrior.png"));
+	s->setTexure(skellWarrior);
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 	s->getSprite().setScale({ 4, 4 });
 
