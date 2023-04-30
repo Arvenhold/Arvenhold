@@ -25,7 +25,7 @@ void MenuScene::Update(const double& dt)
 		{
 			if (mouse_pos.y >= Engine::getWindowSize().y * 0.347 && mouse_pos.y <= Engine::getWindowSize().y * 0.421)
 			{
-				Engine::ChangeScene(&dungeonScene);
+				Engine::ChangeScene(&ogScene);
 			}
 			if (mouse_pos.y >= Engine::getWindowSize().y * 0.444 && mouse_pos.y <= Engine::getWindowSize().y * 0.519)
 			{
@@ -57,7 +57,7 @@ void MenuScene::Load() {
 	cout << " Scene Menu Load" << endl;
 
 	auto background = makeEntity();
-	background->setPosition({ Engine::getWindowSize().x * 0.5f, Engine::getWindowSize().y * 0.5f });
+	background->setPosition({ 960, 540 });
 
 	{
 		auto s = background->addComponent<SpriteComponent>();
@@ -74,7 +74,7 @@ void MenuScene::Load() {
 
 		t->getText()->setCharacterSize(192);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ Engine::getWindowSize().x * 0.375f, Engine::getWindowSize().y * 0.15f });
+		t->getText()->setPosition({ 720, 162 });
 		t->getText()->setOrigin({ 80,20 });
 	}
 
@@ -82,7 +82,7 @@ void MenuScene::Load() {
 	{
 		auto btn = makeEntity();
 
-		btn->setPosition({ Engine::getWindowSize().x * 0.5f, Engine::getWindowSize().y * (0.55f + (i * 0.1f)) });
+		btn->setPosition({ 960.0f, (594.0f + (i * 108.0f))});
 		auto s = btn->addComponent<SpriteComponent>();
 
 		s->setTexure(Resources::get<Texture>("button.png"));
@@ -103,8 +103,7 @@ void MenuScene::Load() {
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ Engine::getWindowSize().x * 0.485f, Engine::getWindowSize().y * 0.445f });
-		//t->getText()->setOrigin({ 80,20 });
+		t->getText()->setPosition({ 931, 481});
 	}
 
 	auto contin = makeEntity();
@@ -119,8 +118,7 @@ void MenuScene::Load() {
 			t->getText()->setFillColor(Color(130, 130, 0));
 		}
 
-		t->getText()->setPosition({ Engine::getWindowSize().x * 0.5f, Engine::getWindowSize().y * 0.545f });
-		//t->getText()->setOrigin({ 80,20 });
+		t->getText()->setPosition({ 960, 589 });
 	}
 
 	auto settings = makeEntity();
@@ -129,8 +127,7 @@ void MenuScene::Load() {
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ Engine::getWindowSize().x * 0.505f, Engine::getWindowSize().y * 0.645f });
-		//t->getText()->setOrigin({ 80,20 });
+		t->getText()->setPosition({ 970, 697 });
 	}
 
 	auto exit = makeEntity();
@@ -139,8 +136,7 @@ void MenuScene::Load() {
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ Engine::getWindowSize().x * 0.52f, Engine::getWindowSize().y * 0.745f });
-		//t->getText()->setOrigin({ 80,20 });
+		t->getText()->setPosition({ 998, 805 });
 	}
 	
 	views.reset(FloatRect({ 100, 100 }, { 1920, 1080 }));
