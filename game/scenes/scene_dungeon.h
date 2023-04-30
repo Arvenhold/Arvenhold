@@ -13,4 +13,5 @@ public:
 	void generateDungeonEntities(std::vector<int> t);
 	void UnLoad() override;
 	void DungeonScene::generateEnemies();
+	std::vector<std::shared_ptr<Entity>> enemies;
 };
