@@ -22,29 +22,21 @@ void ExplodeComponent::update(double dt) {
                 }
             }
         }
+
+        auto scale = _parent->get_components<SpriteComponent>()[0]->getSprite().getScale().x;
+
+        _parent->get_components<SpriteComponent>()[0]->getSprite().setScale(Vector2f(scale + dt * 30, scale + dt* 30));
     }
 }
 
 ExplodeComponent::ExplodeComponent(Entity* p)
     : Component(p) {
 
-    _lifetime = 0.15f;
+    _lifetime = 0.1f;
 
     auto s = p->addComponent<SpriteComponent>();
 
     s->setTexure(Resources::get<Texture>("fireball_explode.png"));
     s->getSprite().setOrigin(Vector2f(32.0f, 32.0f));
-    s->getSprite().setScale({ 4.0f, 4.0f });
-
-    /*auto ang = 90 + direction.angle().asDegrees();
-    p->setRotation(ang);
-
-    b2PolygonShape Shape;
-    Shape.SetAsBox(0.0f, 0.0f);
-
-    auto pc = p->addComponent<PhysicsComponent>(true, Shape);
-
-    pc->setFriction(1.0f);
-    pc->impulse(direction * 40.0f);
-    pc->getFixture()->SetSensor(true);*/
+    s->getSprite().setScale({ 1.0f, 1.0f });
 }

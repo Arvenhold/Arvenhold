@@ -23,7 +23,7 @@ void DeathComponent::render() {
 }
 
 void DeathComponent::kill() {
-	if (Keyboard::isKeyPressed(Keyboard::A))
+	if (Keyboard::isKeyPressed(Keyboard::E))
 	{
 		FileHandler::save(gameWidth, gameHeight);
 	}

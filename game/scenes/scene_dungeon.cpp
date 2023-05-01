@@ -11,6 +11,7 @@
 #include "../steering_states.h"
 #include "../steering_decisions.h"
 #include "../components/cmp_spell.h"
+#include "../components/cmp_entity_tracker.h"
 
 using namespace std;
 using namespace sf;
@@ -33,6 +34,8 @@ vector<Vector2f> pillarPos;
 
 b2PolygonShape Shape;
 
+float ttime;
+
 int level;
 
 void DungeonScene::Update(const double& dt) 
@@ -51,8 +54,21 @@ void DungeonScene::Update(const double& dt)
 		}
 		else
 		{
+
+			ttime += dt;
+
+			auto hp = (sin(ttime) + 1);
+
 			player->update(dt);
 			Scene::Update(dt);
+
+			auto hpBar = ui->get_components<SpriteComponent>()[1];
+
+			auto hpPos = hpBar->getSprite().getPosition();
+
+			hpBar->getSprite().setScale(Vector2f(hp, 2.0f));
+			hpBar->getSprite().setPosition(Vector2f(hpPos.x - 32, hpPos.y));
+
 			view.setCenter(player.get()->getPosition());
 			Engine::GetWindow().setView(view);
 		}
@@ -70,7 +86,7 @@ void DungeonScene::Load()
 
 	level = 1;
 
-	
+	ttime = 0;
 
 	auto t = ls::generateDungeon(level);
 	
@@ -88,21 +104,12 @@ void DungeonScene::Load()
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 	s->getSprite().setScale({ 2, 2 });
 
-	//s->getSprite().setColor(Color(255, 155, 155));
 
-	ui = makeEntity();
-	//ui->addComponent<PlayerTrackingComponent>({0.f,-32.f});
-	{
-		auto sh = ui->addComponent<ShapeComponent>();
-		sh->setShape<sf::RectangleShape>(Vector2f(40.f, 10.f));
-		sh->getShape().setFillColor(Color::Green);
-		sh->getShape().setOrigin(Vector2f(20.f, 50.f));
-	}
 
 	//auto p_d = player->addComponent<DeathComponent>();
 	//p_d->setType(true);
 
-	//s->getSprite().setTextureRect(sf::IntRect(Vector2(16, 16), Vector2(32, 32)));
+
 
 	b2PolygonShape Shape;
 
@@ -133,12 +140,20 @@ void DungeonScene::Load()
 	}
 
 	ui = makeEntity();
-	//ui->addComponent<PlayerTrackingComponent>({0.f,-32.f});
+	ui->addComponent<EntityTrackerComponent>(player.get());
 	{
-		auto sh = ui->addComponent<ShapeComponent>();
-		sh->setShape<sf::RectangleShape>(Vector2f(40.f, 10.f));
-		sh->getShape().setFillColor(Color::Green);
-		sh->getShape().setOrigin(Vector2f(20.f, 50.f));
+		auto sbg = ui->addComponent<SpriteComponent>();
+		sbg->setTexure(Resources::get<Texture>("hp_bar.png"));
+		sbg->getSprite().setOrigin(Vector2f(16.f, 40.f));
+		sbg->getSprite().setScale({ 2, 2 });
+		sbg->getSprite().setColor(Color::Black);
+
+		auto sh = ui->addComponent<SpriteComponent>();
+		sh->setTexure(Resources::get<Texture>("hp_bar.png"));
+		sh->getSprite().setOrigin(Vector2f(0.f, 40.f));
+		sh->getSprite().setPosition(Vector2f(16,0));
+		sh->getSprite().setScale({ 2, 2 });
+		sh->getSprite().setColor(Color::Green);
 	}
 
 	view.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
@@ -408,18 +423,18 @@ void DungeonScene::UnLoad()
 {
 	enemies.clear();
 	player.reset();
+	ui.reset();
 	boss.reset();
 	floors.clear();
 	pillarPos.clear();
 	Scene::UnLoad();
 }
 
-void DungeonScene::Render() {
-
-	//Renderer::queue(&text);
-	//ls::Render(Engine::GetWindow());
-	ui->render();
+void DungeonScene::Render() 
+{
 	Scene::Render();
+	ui->render();
+	Renderer::render();
 }
 
 // Collision polygons

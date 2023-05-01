@@ -42,7 +42,7 @@ void FireballComponent::update(double dt) {
 
             offset.y = -1.0f * offset.y;
 
-            explosion->setPosition(_parent->getPosition() + normalize(offset) * 80.0f);
+            explosion->setPosition(_parent->getPosition() + normalize(offset) * 60.0f);
             //bullet->addComponent<HurtComponent>();
             explosion->addComponent<ExplodeComponent>();
         }
