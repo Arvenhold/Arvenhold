@@ -13,7 +13,7 @@ void DeathComponent::update(double dt) {
 
     //get distance to player
 
-    if (_parent->getPosition().x - _player->getPosition().x < 25.0f && _parent->getPosition().y -_player->getPosition().y < 25.0f) {
+    if (_parent->getPosition().x - _player->getPosition().x > 25.0f && _parent->getPosition().y -_player->getPosition().y > 25.0f) {
         kill();
     }
 }
@@ -23,10 +23,10 @@ void DeathComponent::render() {
 }
 
 void DeathComponent::kill() {
-	if (Keyboard::isKeyPressed(Keyboard::E))
-	{
-		FileHandler::save(gameWidth, gameHeight);
-	}
+
+	_parent->setVisible(false);
+		//FileHandler::save(gameWidth, gameHeight);
+
 }
 
 

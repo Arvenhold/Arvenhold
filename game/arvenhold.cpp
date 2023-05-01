@@ -18,8 +18,6 @@ int main() {
 
 	FileHandler::load(gameHeight, gameWidth);
 
-
-	cout << gameWidth << endl;
 	Engine::Start(gameWidth, gameHeight, "Arvenhold", &menuScene);
 
 	FileHandler::save(gameHeight, gameWidth);
