@@ -10,29 +10,46 @@ void ExplodeComponent::update(double dt) {
     }
     else
     {
-        for (auto e : _parent->scene->ents.list)
+        if (!_hit)
         {
-            auto t = e->getTags();
-
-            if (t.find("enemy") != t.end())
+            for (auto e : _parent->scene->ents.list)
             {
-                if (length(_parent->getPosition() - e->getPosition()) < 128.0f)
+                auto t = e->getTags();
+
+                if (t.find("enemy") != t.end())
                 {
-                    e->setForDelete();
+                    if (length(_parent->getPosition() - e->getPosition()) < 180.0f)
+                    {
+                        _hit = true;
+
+                        e->setForDelete();
+
+                        if (_hits < 4 && _cast)
+                        {
+                            auto explosion = _parent->scene->makeEntity();
+
+                            explosion->setPosition(e->getPosition());
+                            //bullet->addComponent<HurtComponent>();
+                            explosion->addComponent<ExplodeComponent>(false);
+                            _hits++;
+                        }
+                    }
                 }
             }
         }
 
         auto scale = _parent->get_components<SpriteComponent>()[0]->getSprite().getScale().x;
 
-        _parent->get_components<SpriteComponent>()[0]->getSprite().setScale(Vector2f(scale + dt * 30, scale + dt* 30));
+        _parent->get_components<SpriteComponent>()[0]->getSprite().setScale(Vector2f(scale + dt * 40, scale + dt* 40));
     }
 }
 
-ExplodeComponent::ExplodeComponent(Entity* p)
-    : Component(p) {
+ExplodeComponent::ExplodeComponent(Entity* p, bool cast)
+    : Component(p), _cast(cast) {
 
-    _lifetime = 0.1f;
+    _hit = false;
+    _hits = 0;
+    _lifetime = 0.12f;
 
     auto s = p->addComponent<SpriteComponent>();
 

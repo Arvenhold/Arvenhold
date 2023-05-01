@@ -44,7 +44,7 @@ void FireballComponent::update(double dt) {
 
             explosion->setPosition(_parent->getPosition() + normalize(offset) * 60.0f);
             //bullet->addComponent<HurtComponent>();
-            explosion->addComponent<ExplodeComponent>();
+            explosion->addComponent<ExplodeComponent>(true);
         }
     }
 }
