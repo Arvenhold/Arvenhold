@@ -7,7 +7,6 @@ void SpriteComponent::setTexure(std::shared_ptr<sf::Texture> tex)
   _sprite->setTexture(*_texture);
 }
 
-
 SpriteComponent::SpriteComponent(Entity* p)
     : Component(p), _sprite(std::make_shared<sf::Sprite>()) {}
 

@@ -4,10 +4,12 @@
 #include "scenes/scene_dungeon.h"
 #include "scenes/scene_overground.h"
 
+// Scenes
 extern DungeonScene dungeonScene;
 extern MenuScene menuScene;
 extern OverGroundScene ogScene;
 
+// Resolution
 extern int gameWidth;
 extern int gameHeight;
 

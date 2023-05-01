@@ -2,8 +2,14 @@
 
 #include "engine.h"
 
-class DungeonScene : public Scene {
+/// <summary>
+/// Spooky scary skeletons
+/// </summary>
+class DungeonScene : public Scene 
+{
 private:
+
+	// Array of dungeon collision shapes
 	static b2Vec2 DungeonScene::_polygons[120][6];
 
 public:

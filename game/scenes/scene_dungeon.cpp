@@ -13,6 +13,8 @@
 #include "../components/cmp_spell.h"
 #include "../components/cmp_entity_tracker.h"
 #include "../components/cmp_health_bar.h"
+#include "../components/cmp_ui_element.h"
+#include "../components/cmp_health.h"
 
 using namespace std;
 using namespace sf;
@@ -96,6 +98,7 @@ void DungeonScene::Update(const double& dt)
 			player->update(dt);
 			Scene::Update(dt);
 
+
 			// Set visibility status for near entities
 			for (auto e : ents.list)
 			{
@@ -123,7 +126,7 @@ void DungeonScene::Update(const double& dt)
 /// <summary>
 /// Load necessary entities and other fun stuff
 /// </summary>
-void DungeonScene::Load() 
+void DungeonScene::Load()
 {
 	// Yes, this is the dungeon scene
 	cout << " Scene Dungeon Load" << endl;
@@ -139,7 +142,7 @@ void DungeonScene::Load()
 
 	// Generate layout
 	auto t = ls::generateDungeon(level);
-	
+
 	// Generate terrain entities
 	generateDungeonEntities(t);
 
@@ -159,6 +162,10 @@ void DungeonScene::Load()
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 	s->getSprite().setScale({ 2, 2 });
 
+	// Give the player some health
+	player->addComponent<HealthComponent>(100);
+
+
 
 
 	//auto p_d = player->addComponent<DeathComponent>();
@@ -177,9 +184,6 @@ void DungeonScene::Load()
 
 	// Use body for player component
 	player->addComponent<PlayerPhysicsComponent>(Shape);
-
-	// Give player some spells
-	player->addComponent<SpellComponent>(15.0f);
 
 	// Texture for pillar tops
 	auto pillarSprite = Resources::get<Texture>("pillar.png");
@@ -220,6 +224,29 @@ void DungeonScene::Load()
 	ui = makeEntity();
 	// Player Healthbar
 	ui->addComponent<HealthBarComponent>(player.get(), player.get());
+
+	auto fireball = ui->addComponent<UIComponent>(Vector2f(-100, 420));
+	fireball->setTexure(Resources::get<Texture>("ui_fire.png"));
+	fireball->getSprite().setOrigin({ 32, 32 });
+	fireball->getSprite().setScale({ 1.5, 1.5 });
+
+	auto lightning = ui->addComponent<UIComponent>(Vector2f(0, 420));
+	lightning->setTexure(Resources::get<Texture>("ui_lightning.png"));
+	lightning->getSprite().setOrigin({ 32, 32 });
+	lightning->getSprite().setScale({ 1.5, 1.5 });
+
+	auto frost = ui->addComponent<UIComponent>(Vector2f(100, 420));
+	frost->setTexure(Resources::get<Texture>("ui_frost.png"));
+	frost->getSprite().setOrigin({ 32, 32 });
+	frost->getSprite().setScale({ 1.5, 1.5 });
+
+	auto potion = ui->addComponent<UIComponent>(Vector2f(230, 420));
+	potion->setTexure(Resources::get<Texture>("ui_potion.png"));
+	potion->getSprite().setOrigin({ 32, 32 });
+	potion->getSprite().setScale({ 1.5, 1.5 });
+
+	// Give player some spells
+	player->addComponent<SpellComponent>(15.0f, &(fireball->getSprite()), &(lightning->getSprite()), &(frost->getSprite()));
 
 	// Set window view
 	Engine::GetWindow().setView(view);
@@ -342,6 +369,8 @@ void DungeonScene::generateEnemies()
 				// Make and enemy and tag it as such
 				auto enemy = makeEntity();
 				enemy->addTag("enemy");
+
+				enemy->addComponent<HealthComponent>(100);
 
 				// Place it on the floor tile
 				enemy->setPosition({ floors[i].x , floors[i].y + 64 });
@@ -516,6 +545,8 @@ void DungeonScene::generateEnemies()
 
 	// Give them somewhere to stay
 	boss->setPosition(bossPos);
+
+	boss->addComponent<HealthComponent>(100*level);
 
 	// Give them a shape
 	b2PolygonShape Shape;

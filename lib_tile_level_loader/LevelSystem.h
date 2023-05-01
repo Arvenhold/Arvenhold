@@ -10,9 +10,13 @@
 
 #define ls LevelSystem
 
+/// <summary>
+/// Semi-pseudo-random dungeon generation
+/// </summary>
 class LevelSystem {
 public:
 
+    // Dungeon blueprint generator
     static std::vector<int> generateDungeon(int level);
 
 private:

@@ -44,3 +44,15 @@ public:
         : _character(character), _target(target), _maxSpeed(maxSpeed) { }
     SteeringOutput getSteering() const noexcept;
 };
+
+// Melee
+
+
+// Arrow
+
+
+// Spell
+
+
+// Boss 
+

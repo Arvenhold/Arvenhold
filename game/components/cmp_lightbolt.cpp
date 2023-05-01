@@ -1,8 +1,13 @@
 #include "cmp_lightbolt.h"
 #include <system_resources.h>
+#include "cmp_health.h"
 using namespace std;
 using namespace sf;
 
+/// <summary>
+/// Update lightning spell
+/// </summary>
+/// <param name="dt">- delta time</param>
 void LightningBoltComponent::update(double dt) {
     _lifetime -= dt;
     _duration += dt;
@@ -11,23 +16,28 @@ void LightningBoltComponent::update(double dt) {
     }
     else if (_duration > 0.05f)
     {
+        // Get enemies and walls
+        auto anemonies = _parent->scene->ents.find("enemy");
+        auto walls = _parent->scene->ents.find("wall");
 
-        for (auto e : _parent->scene->ents.list)
+        // Check if spell has hit an enemy
+        for (auto e : anemonies)
         {
-            auto t = e->getTags();
-
-            if (t.find("enemy") != t.end())
+            if (length(_parent->getPosition() - e->getPosition()) < 54.0f)
             {
-                if (length(_parent->getPosition() - e->getPosition()) < 54.0f)
-                {
-                    e->setForDelete();
-                    _parent->setForDelete();
-                    _hit = true;
-                }
+                // Give the enemy a message
+                e->get_components<HealthComponent>()[0]->takeDamage(60);
+                _parent->setForDelete();
+                _hit = true;
             }
-            else if (t.find("wall") != t.end())
+        }
+
+        // If not hit enemy has it hit a wall?
+        if (!_hit)
+        {
+            for (auto w : walls)
             {
-                if (length(_parent->getPosition() - e->getPosition()) < 64.0f)
+                if (length(_parent->getPosition() - w->getPosition()) < 64.0f)
                 {
                     _parent->setForDelete();
                     _hit = true;
@@ -35,23 +45,31 @@ void LightningBoltComponent::update(double dt) {
             }
         }
 
+        // If it was casted by a person and it hit something
         if (_casted && _hit)
         {
+            // Create some offshoots
             int shoots = 6;
 
             for (int i = 0; i < shoots; i++)
             {
+                // Have the children each go off in their own directions in life
                 auto direction = rotate(normalize(Vector2f(1, 0)), _parent->getRotation() + i*(360.0f/shoots));
-
                 auto lightningBolt = _parent->scene->makeEntity();
                 lightningBolt->setPosition(_parent->getPosition() + 10.0f * direction);
-                //bullet->addComponent<HurtComponent>();
                 lightningBolt->addComponent<LightningBoltComponent>(direction, false, 1.0f);
             }
         }
     }
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="p"></param>
+/// <param name="direction"></param>
+/// <param name="cast"></param>
+/// <param name="lifetime"></param>
 LightningBoltComponent::LightningBoltComponent(Entity* p, Vector2f direction, bool cast, float lifetime = 4.0f)
     : Component(p), _lifetime(lifetime) {
 

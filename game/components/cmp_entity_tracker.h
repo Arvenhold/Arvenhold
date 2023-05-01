@@ -2,8 +2,13 @@
 
 #include <ecm.h>
 
+/// <summary>
+/// Got yourself a tracker eh?
+/// </summary>
 class EntityTrackerComponent : public Component {
 protected:
+
+	// The target
 	Entity* _ttarget;
 
 public:

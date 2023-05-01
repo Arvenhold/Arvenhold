@@ -4,9 +4,15 @@
 #include "engine.h"
 #include "cmp_entity_tracker.h"
 
+/// <summary>
+/// Keep track of health with onscreen element
+/// </summary>
 class HealthBarComponent : public EntityTrackerComponent {
 protected:
+
+	// Whose health is it
 	Entity* _hpTarget;
+
 	float _ttime;
 
 public:
