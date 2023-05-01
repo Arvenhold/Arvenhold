@@ -37,12 +37,11 @@ void LightningBoltComponent::update(double dt) {
 
         if (_casted && _hit)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                auto xDir = cos(i * b2_pi * 0.5f) + sin(i * b2_pi * 0.5f);
-                auto yDir = cos(i * b2_pi);
+            int shoots = 6;
 
-                auto direction = normalize(Vector2f(xDir, yDir));
+            for (int i = 0; i < shoots; i++)
+            {
+                auto direction = rotate(normalize(Vector2f(1, 0)), _parent->getRotation() + i*(360.0f/shoots));
 
                 auto lightningBolt = _parent->scene->makeEntity();
                 lightningBolt->setPosition(_parent->getPosition() + 10.0f * direction);

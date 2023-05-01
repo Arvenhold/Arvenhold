@@ -6,10 +6,13 @@
 class ExplodeComponent : public Component {
 protected:
 	float _lifetime;
+	bool _hit;
+	int _hits;
+	bool _cast;
 
 public:
 	void update(double dt) override;
 	void render() override {}
-	explicit ExplodeComponent(Entity* p);
+	explicit ExplodeComponent(Entity* p, bool cast);
 	ExplodeComponent() = delete;
 };

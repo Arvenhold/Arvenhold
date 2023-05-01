@@ -12,34 +12,38 @@
 #include "../steering_decisions.h"
 #include "../components/cmp_spell.h"
 #include "../components/cmp_entity_tracker.h"
+#include "../components/cmp_health_bar.h"
 
 using namespace std;
 using namespace sf;
 
+// Useful entities
 static shared_ptr<Entity> player;
-
 static shared_ptr<Entity> boss;
-
 static shared_ptr<Entity> ui;
 
+// Healthbars
+vector<shared_ptr<Entity>> hpBars;
+
+// Dungeon view
 View view;
 
+// Some interesting positions
 Vector2f startPos;
-
 Vector2f bossPos;
-
 vector<Vector2f> floors;
-
 vector<Vector2f> pillarPos;
 
-b2PolygonShape Shape;
-
-float ttime;
-
+// Current dungeon level
 int level;
 
+/// <summary>
+/// Update dungeon
+/// </summary>
+/// <param name="dt">delta time</param>
 void DungeonScene::Update(const double& dt) 
 {
+	// If pressed tab go to main menu
 	if (Keyboard::isKeyPressed(Keyboard::Key(60))) 
 	{
 		Engine::ChangeScene(&menuScene);
@@ -48,57 +52,108 @@ void DungeonScene::Update(const double& dt)
 	{
 		auto pPos = player->getPosition();
 
+		// If player goes to dungeon entrance
 		if (pPos.x < startPos.x + 48 && pPos.x > startPos.x - 48 && pPos.y > startPos.y + 144 && pPos.y < startPos.y + 160)
 		{
+			// Go touch grass
 			Engine::ChangeScene(&ogScene);
 		}
 		else
 		{
+			// FPS
+			//cout << 1.0 / dt << endl;
 
-			ttime += dt;
+			// Set alive status for entities
+			for (auto e : ents.list)
+			{
+				// If not alive or deleting but nearby
+				if (length(e->getPosition() - player->getPosition()) < 2000 && !e->isAlive() && !e->is_fordeletion())
+				{
+					// Set alive
+					e->setAlive(true);
+				}
+				// If not nearby but alive
+				else if (length(e->getPosition() - player->getPosition()) > 2000 && e->isAlive())
+				{
+					// Set not alive
+					e->setAlive(false);
+				}
+			}
 
-			auto hp = (sin(ttime) + 1);
+			// Set hp bars alive for alive enemies
+			for (auto e : hpBars)
+			{
+				if (e->get_components<HealthBarComponent>()[0]->isTargetAlive())
+				{
+					e->setAlive(true);
+				}
+			}
 
+			// Make sure ui is alive
+			ui->setAlive(true);
+
+			// Update entities
 			player->update(dt);
 			Scene::Update(dt);
 
-			auto hpBar = ui->get_components<SpriteComponent>()[1];
+			// Set visibility status for near entities
+			for (auto e : ents.list)
+			{
+				// If not visible or deleting but nearby
+				if (!e->isVisible() && length(e->getPosition() - player->getPosition()) < 1280 && !e->is_fordeletion())
+				{
+					// Set visible
+					e->setVisible(true);
+				}
+				// If not nearby but visible
+				else if ((e->isVisible() && length(e->getPosition() - player->getPosition()) > 1280))
+				{
+					// Set not visible
+					e->setVisible(false);
+				}
+			}
 
-			auto hpPos = hpBar->getSprite().getPosition();
-
-			hpBar->getSprite().setScale(Vector2f(hp, 2.0f));
-			hpBar->getSprite().setPosition(Vector2f(hpPos.x - 32, hpPos.y));
-
+			// Reset view on player position
 			view.setCenter(player.get()->getPosition());
 			Engine::GetWindow().setView(view);
 		}
 	}
 }
 
+/// <summary>
+/// Load necessary entities and other fun stuff
+/// </summary>
 void DungeonScene::Load() 
 {
-
+	// Yes, this is the dungeon scene
 	cout << " Scene Dungeon Load" << endl;
 
+	// Make sure vectors are clear
 	pillarPos.clear();
 	floors.clear();
 	enemies.clear();
+	hpBars.clear();
 
+	// Current dungeon level
 	level = 1;
 
-	ttime = 0;
-
+	// Generate layout
 	auto t = ls::generateDungeon(level);
 	
+	// Generate terrain entities
 	generateDungeonEntities(t);
 
+	// Make player entity
 	player = makeEntity();
 	player->setPosition(startPos);
 
+	// Tag as player
 	player->addTag("player");
 
+	// Generate enemy entites
 	generateEnemies();
 
+	// Give player a nice sprite
 	auto s = player->addComponent<SpriteComponent>();
 	s->setTexure(Resources::get<Texture>("wizard.png"));
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
@@ -111,22 +166,25 @@ void DungeonScene::Load()
 
 
 
+	// Set standard physics body
 	b2PolygonShape Shape;
-
 	b2Vec2 vertices[4];
 	vertices[0].Set(-1.0f, -1.0f);
 	vertices[1].Set(0.0f, -1.0f);
 	vertices[2].Set(1.0f, -1.0f);
 	vertices[3].Set(0.0f, 0.0f);
-
 	Shape.Set(vertices, 4);
 
+	// Use body for player component
 	player->addComponent<PlayerPhysicsComponent>(Shape);
 
+	// Give player some spells
 	player->addComponent<SpellComponent>(15.0f);
 
+	// Texture for pillar tops
 	auto pillarSprite = Resources::get<Texture>("pillar.png");
 
+	// Generate pillar tops
 	for (int i = 0; i < pillarPos.size(); i++)
 	{
 		auto pillar = makeEntity();
@@ -139,73 +197,95 @@ void DungeonScene::Load()
 		s->getSprite().setScale({ 2, 2 });
 	}
 
-	ui = makeEntity();
-	ui->addComponent<EntityTrackerComponent>(player.get());
+	// Create healthbars for enemies that appear on top of sprites
+	for (auto e : enemies)
 	{
-		auto sbg = ui->addComponent<SpriteComponent>();
-		sbg->setTexure(Resources::get<Texture>("hp_bar.png"));
-		sbg->getSprite().setOrigin(Vector2f(16.f, 40.f));
-		sbg->getSprite().setScale({ 2, 2 });
-		sbg->getSprite().setColor(Color::Black);
-
-		auto sh = ui->addComponent<SpriteComponent>();
-		sh->setTexure(Resources::get<Texture>("hp_bar.png"));
-		sh->getSprite().setOrigin(Vector2f(0.f, 40.f));
-		sh->getSprite().setPosition(Vector2f(16,0));
-		sh->getSprite().setScale({ 2, 2 });
-		sh->getSprite().setColor(Color::Green);
+		auto enemyUI = makeEntity();
+		enemyUI->addComponent<HealthBarComponent>(player.get(), e.get());
+		hpBars.push_back(enemyUI);
 	}
 
+	// Set view to player position
 	view.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
-
 	view.setCenter(player.get()->getPosition());
 
+	// Set all entities to not visible or alive
+	for (auto e : ents.list)
+	{
+		e->setVisible(false);
+		e->setAlive(false);
+	}
+
+	// Make UI
+	ui = makeEntity();
+	// Player Healthbar
+	ui->addComponent<HealthBarComponent>(player.get(), player.get());
+
+	// Set window view
 	Engine::GetWindow().setView(view);
 
+	// Everything is loaded
 	setLoaded(true);
 }
 
+/// <summary>
+/// Generate terrain entities for the dungeon from the blueprint provided
+/// </summary>
+/// <param name="t">Dungeon layout blueprint</param>
 void DungeonScene::generateDungeonEntities(vector<int> t)
 {
+	// Load in terrain texture
 	auto text = Resources::get<Texture>("dungeon_tiles.png");
 
+	// Go down the rows of this "2d" vector
 	for (int i = 0; i < 135; i++)
 	{
+		// Go across the columns of this "2d" vector
 		for (int j = 0; j < 135; j++)
 		{
+			// If it is not an empty square
 			if (t[i * 135 + j] != -1)
 			{
+				// Make tile entity
 				auto tile = makeEntity();
 
+				// Set its proper position
 				tile->setPosition(Vector2f(j * 128, i * 128));
 
+				// If it is the dungeon entrance
 				if (t[i * 135 + j] == 84)
 				{
+					// Set start position to be just above it
 					startPos = Vector2f(j * 128, (i-1) * 128);
 				}
 
+				// If it is a pillar base
 				if (t[i * 135 + j] == 95)
 				{
+					// Keep an eye on it
 					pillarPos.push_back(Vector2f(j * 128, (i - 1) * 128));
 				}
 
+				// Give the tile a texture
 				auto s = tile->addComponent<SpriteComponent>();
 				s->setTexure(text);
 				s->getSprite().setOrigin(Vector2f(32.0f, 32.0f));
 
+				//Give the tile its proper sprite from the texture
 				auto xpos = t[i * 135 + j] % 12;
 				auto ypos = t[i * 135 + j] / 12;
 				s->getSprite().setTextureRect(sf::IntRect(Vector2(xpos * 64, ypos * 64), Vector2(64, 64)));
 				s->getSprite().setScale({ 2, 2 });
 
+				// If the tile is not a floor tile
 				if (t[i * 135 + j] != 72 && t[i * 135 + j] != 73 && t[i * 135 + j] != 74 && t[i * 135 + j] != 84 && t[i * 135 + j] != 85 && t[i * 135 + j] != 86 && t[i * 135 + j] != 118 && t[i * 135 + j] != 119)
 				{
+					// Give the tile a collision shape
 					b2PolygonShape Shape;
-
 					Shape.Set(_polygons[t[i * 135 + j]], 6);
-
 					tile->addComponent<PhysicsComponent>(false, Shape);
 
+					// Tag it as either a wall or a pillar
 					if (t[i * 135 + j] != 83 && t[i * 135 + j] != 95)
 					{
 						tile->addTag("wall");
@@ -215,12 +295,15 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 						tile->addTag("pillar");
 					}
 				}
+				// If it is but a floor
 				else
 				{
+					// Tag it as a floor and keep track of its position
 					tile->addTag("floor");
 					floors.push_back(Vector2f(j * 128, (i - 1) * 128));
 				}
 
+				// The location of the boss is of much interest to the enemy generator
 				if (t[i * 135 + j] == 118)
 				{
 					bossPos = Vector2f(j * 128, (i - 1) * 128);
@@ -230,54 +313,72 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 	}
 }
 
+/// <summary>
+/// Generate enemy entities for the dungeon
+/// </summary>
 void DungeonScene::generateEnemies()
 {
+	// Random number fun time
 	srand(time(NULL));
 
+	// Load in the enemy textures
 	auto skellington = Resources::get<Texture>("skelly.png");
 	auto skellWarrior = Resources::get<Texture>("skelly-warrior.png");
 	auto skellRanger = Resources::get<Texture>("skelly-ranger.png");
 	auto skellWizard = Resources::get<Texture>("skelly-wizard.png");
 
+	// For each floor tile
 	for (int i = 0; i < floors.size(); i++)
 	{
+		// If it is not too close to the entrance
 		if (length(floors[i] - startPos) > 1280.0)
 		{
-
+			// Spin the wheel to spawn an enemy
 			int spawnChance = (rand() % 100) + 1;
 
+			// If the wheel says "YES"
 			if (spawnChance <= (10 + 3 * level))
 			{
+				// Make and enemy and tag it as such
 				auto enemy = makeEntity();
-
 				enemy->addTag("enemy");
 
+				// Place it on the floor tile
 				enemy->setPosition({ floors[i].x , floors[i].y + 64 });
 
+				// Give the enemy a shape
 				b2PolygonShape Shape;
-
 				b2Vec2 vertices[4];
 				vertices[0].Set(-0.5f, -0.5f);
 				vertices[1].Set(0.0f, -1.0f);
 				vertices[2].Set(0.5f, 0.5f);
 				vertices[3].Set(0.0f, 1.0f);
-
 				Shape.Set(vertices, 4);
 
+				// Spin the super wheel for determining the enemy type
 				int enemyType = (rand() % 100) + 1;
 				{
+					// Give the enemy a new look
 					auto s = enemy->addComponent<SpriteComponent>();
+					s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 
+					// If it is a normal skeleton enemy
 					if (enemyType < (100 - level * 5))
 					{
+						// Set correct texture
 						s->setTexure(skellington);
 
+						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 175.0f);
 
+						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
+
+
+
 
 						auto eh = enemy->addComponent<DeathComponent>();
 						eh->setTarget(player);
@@ -290,122 +391,157 @@ void DungeonScene::generateEnemies()
 
 						// for the update cycle, check if distance is less than 0, if so kill
 
+						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
 							50.0f,
 							make_shared<FleeDecision>(),
 							make_shared<DistanceDecision>(
 								player,
-								840.0f,
+								1000.0f,
 								make_shared<SeekDecision>(),
 								make_shared<StationaryDecision>()));
 
+						// Give the enemy some decisions to make
 						enemy->addComponent<DecisionTreeComponent>(decision);
+
+						// Set the enemy size
+						s->getSprite().setScale({ 2, 2 });
 					}
+					// If it is a skeleton warrior
 					else if (enemyType < (100 - level * 3))
 					{
+						// Set correct texture
 						s->setTexure(skellWarrior);
 
+						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 150.0f);
 
+						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
 
+						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
 							50.0f,
 							make_shared<FleeDecision>(),
 							make_shared<DistanceDecision>(
 								player,
-								840.0f,
+								1000.0f,
 								make_shared<SeekDecision>(),
 								make_shared<StationaryDecision>()));
 
+						// Give the enemy some decisions to make
 						enemy->addComponent<DecisionTreeComponent>(decision);
+
+						// Set the enemy size
+						s->getSprite().setScale({ 2.4, 2.4 });
 					}
+					// If it is a skeleton ranger
 					else if (enemyType < (100 - level * 1.5f))
 					{
+						// Set correct texture
 						s->setTexure(skellRanger);
 
+						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 200.0f);
 
+						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
 
+						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
 							300.0f,
 							make_shared<FleeDecision>(),
 							make_shared<DistanceDecision>(
 								player,
-								840.0f,
+								1000.0f,
 								make_shared<SeekDecision>(),
 								make_shared<StationaryDecision>()));
 
+						// Give the enemy some decisions to make
 						enemy->addComponent<DecisionTreeComponent>(decision);
+
+						// Set the enemy size
+						s->getSprite().setScale({ 2.2, 2.2 });
 					}
+					// If it is a skeleton wizard
 					else
 					{
+						// Set correct texture
 						s->setTexure(skellWizard);
 
+						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 125.0f);
 
+						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
 
+						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
 							400.0f,
 							make_shared<FleeDecision>(),
 							make_shared<DistanceDecision>(
 								player,
-								840.0f,
+								1000.0f,
 								make_shared<SeekDecision>(),
 								make_shared<StationaryDecision>()));
 
+						// Give the enemy some decisions to make
 						enemy->addComponent<DecisionTreeComponent>(decision);
-					}
 
-					s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
-					s->getSprite().setScale({ 2, 2 });
+						// Set the enemy size
+						s->getSprite().setScale({ 2, 2 });
+					}
 				}
+				// Add the enemy to the list
 				enemies.push_back(enemy);
 			}
 		}
 	}
 
+	// Make the boss
 	boss = makeEntity();
 
+	// Give them somewhere to stay
 	boss->setPosition(bossPos);
 
+	// Give them a shape
 	b2PolygonShape Shape;
-
 	b2Vec2 vertices[4];
 	vertices[0].Set(-2.0f, -2.0f);
 	vertices[1].Set(0.0f, -4.0f);
 	vertices[2].Set(2.0f, -2.0f);
 	vertices[3].Set(0.0f, 0.0f);
-
 	Shape.Set(vertices, 4);
 
+	// And some physics too
 	boss->addComponent<PhysicsComponent>(true, Shape, 100.0f);
 
+	// Give the boss something to wear
 	auto s = boss->addComponent<SpriteComponent>();
 	s->setTexure(skellWarrior);
 	s->getSprite().setOrigin(Vector2f(16.0f, 16.0f));
 	s->getSprite().setScale({ 4, 4 });
 
+	// The boss needs some states to be in
 	auto sm = boss->addComponent<StateMachineComponent>();
 	sm->addState("stationary", make_shared<StationaryState>());
 	sm->addState("seek", make_shared<SeekState>(boss, player));
 	sm->addState("flee", make_shared<FleeState>(boss, player));
 
+	// Decisions for the boss
 	auto decision = make_shared<DistanceDecision>(
 		player,
 		50.0f,
@@ -416,28 +552,54 @@ void DungeonScene::generateEnemies()
 			make_shared<SeekDecision>(),
 			make_shared<StationaryDecision>()));
 
+	// The boss is the one to make the decisions
 	boss->addComponent<DecisionTreeComponent>(decision);
 }
 
+/// <summary>
+/// Unload everything
+/// </summary>
 void DungeonScene::UnLoad()
 {
+	// Empty vectors
 	enemies.clear();
+	floors.clear();
+	pillarPos.clear();
+	hpBars.clear();
+
+	// Just to be tidy
 	player.reset();
 	ui.reset();
 	boss.reset();
-	floors.clear();
-	pillarPos.clear();
+
+	// Unload EVERYTHING
 	Scene::UnLoad();
 }
 
+/// <summary>
+/// Render Dungeon scene
+/// </summary>
 void DungeonScene::Render() 
 {
+	// Render the scene
 	Scene::Render();
+
+	// Queue healthbars
+	for (auto e : hpBars)
+	{
+		e->render();
+	}
+
+	// Queue UI
 	ui->render();
+
+	// Render UI elements again
 	Renderer::render();
 }
 
-// Collision polygons
+/// <summary>
+/// Dungeon terrain collision bodies
+/// </summary>
 b2Vec2 DungeonScene::_polygons[120][6] =
 {
 	// Row 1
