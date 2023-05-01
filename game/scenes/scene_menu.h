@@ -2,15 +2,12 @@
 
 #include "engine.h"
 
-class MenuScene : public Scene {
-private:
-	//sf::Text text;
-
+/// <summary>
+/// The beginning
+/// </summary>
+class MenuScene : public Scene 
+{
 public:
-	/*MenuScene() = default;
-
-	~MenuScene() override = default;*/
-
 	void Render() override;
 
 	void Update(const double& dt) override;

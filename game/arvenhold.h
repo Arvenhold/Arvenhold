@@ -5,10 +5,12 @@
 #include "scenes/scene_overground.h"
 #include <sfml/graphics.hpp>
 
+// Scenes
 extern DungeonScene dungeonScene;
 extern MenuScene menuScene;
 extern OverGroundScene ogScene;
 
+// Resolution
 extern int gameWidth;
 extern int gameHeight;
 

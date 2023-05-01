@@ -48,3 +48,15 @@ public:
         sm[0]->changeState("flee");
     }
 };
+
+// Melee
+
+
+// Arrow
+
+
+// Spell
+
+
+// Boss 
+

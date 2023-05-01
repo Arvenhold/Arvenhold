@@ -3,9 +3,16 @@
 #include <ecm.h>
 #include "engine.h"
 
+/// <summary>
+/// Fire ballin'
+/// </summary>
 class FireballComponent : public Component {
 protected:
+
+	// Lifetime of spell
 	float _lifetime;
+
+	// Has it hit anything?
 	bool _hit;
 
 public:

@@ -14,12 +14,10 @@ ActorMovementComponent::ActorMovementComponent(Entity* p, const b2PolygonShape S
     : _speed(100.0f), PhysicsComponent(p, true, Shape) {
     _body->SetSleepingAllowed(false);
     _body->SetFixedRotation(true);
-    //Bullet items have higher-res collision detection
     _body->SetBullet(true);
 }
 
 bool ActorMovementComponent::validMove(const sf::Vector2f& pos) {
-    //return (LevelSystem::getTileAt(pos) != LevelSystem::WALL);
     return true;
 }
 

@@ -28,3 +28,15 @@ public:
     FleeState(std::shared_ptr<Entity> owner, std::shared_ptr<Entity> player) : _steering(owner.get(), player.get(), 50.0f) { }
     void execute(Entity*, double) noexcept override;
 };
+
+// Melee
+
+
+// Arrow
+
+
+// Spell
+
+
+// Boss 
+

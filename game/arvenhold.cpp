@@ -4,13 +4,16 @@
 
 using namespace std;
 
+// Scenes
 DungeonScene dungeonScene;
 MenuScene menuScene;
 OverGroundScene ogScene;
 
+// Sindow size
 int gameWidth;
 int gameHeight;
 
+// Start the damn thing
 int main() {
 
 	FileHandler::load(gameHeight, gameWidth);

@@ -20,3 +20,15 @@ SteeringOutput Flee::getSteering() const noexcept {
     steering.rotation = 0.0f;
     return steering;
 }
+
+// Melee
+
+
+// Arrow
+
+
+// Spell
+
+
+// Boss 
+

@@ -3,6 +3,9 @@
 #include <ecm.h>
 #include "engine.h"
 
+/// <summary>
+/// Lightning Bolt! Lightning Bolt! Lightning Bolt!
+/// </summary>
 class LightningBoltComponent : public Component {
 protected:
 	float _lifetime;

@@ -3,75 +3,105 @@
 #include <iostream>
 
 // ########################################
-// ## SEMI-PSEUDO-RANDOM-GENERATION FUN! ##
+// ## SEMI-PSEUDO-RANDOM GENERATION FUN! ##
 // ########################################
 
 using namespace std;
 using namespace sf;
 
-// Generate dungeon blueprint
+/// <summary>
+/// Generate dungeon layout
+/// </summary>
+/// <param name="level">- current dungeon level</param>
+/// <returns>Dungeon blueprint</returns>
 std::vector<int> LevelSystem::generateDungeon(int level)
 {
-
+	// Create the blueprint vector
 	std::vector<int> tils;
 
+	// Make sure it is empty
 	tils.clear();
 
+	// Random number time
 	srand(time(NULL));
 
+	// Offset for dungeon selection
 	int dungOffset = rand() % 5;
 
+	// Select layout
 	int* layout = _dungeonLayouts[level-1][dungOffset];
 
+	// Current cluster
 	int* tCluster;
 
+	// For each row of clusters in the dungeon
 	for (int dRow = 0; dRow < 5; dRow++)
 	{
+		// Make a cluster offset
 		int cOffset = rand() % 12;
 
+		// For each row of rooms in the cluster
 		for (int cRow = 0; cRow < 3; cRow++)
 		{
+			// Make a room offset
 			int offset = rand() % 10;
 
+			// For each row of tiles in the room
 			for (int rRow = 0; rRow < 9; rRow++)
 			{
+				// For each column of clusters in the dungeon
 				for (int dCol = 0; dCol < 5; dCol++)
 				{
+					// If it is a special cluster use that
 					if (layout[dCol + dRow * 5] > 14)
 					{
 						tCluster = _specialClusters[layout[dCol + dRow * 5] - 15];
 					}
+					// Otherwise randomly choose a variety of that cluster
 					else if (layout[dCol + dRow * 5] > -1)
 					{
 						int rando = ((dCol + dRow + cOffset) % 4);
 						tCluster = _clusters[layout[dCol + dRow * 5]][rando];
 					}					
 
+					// For each column of rooms in the cluster
 					for (int cCol = 0; cCol < 3; cCol++)
 					{
+						// Select Which room variety to choose from
 						int rando = ((cCol + cRow + offset) % 4);
 
+						// For each column of tiles in the room
 						for (int rCol = 0; rCol < 9; rCol++)
 						{
+							// If the cluster was special
 							if (layout[dCol + dRow * 5] > 15)
 							{
-								if (layout[dCol + dRow * 5] == -1 || tCluster[cCol + cRow * 3] == -1)
+								// If the room is empty
+								if (tCluster[cCol + cRow * 3] == -1)
 								{
+									// There is no tile
 									tils.push_back(-1);
 								}
+								// Otherwise
 								else
 								{
+									// Designate tile
 									tils.push_back(_specialRooms[tCluster[cCol + cRow * 3]][rCol + rRow * 9]);
 								}
 							}
+							// If the cluster was not so special
 							else
 							{
+								// If the cluster or room are empty
 								if (layout[dCol + dRow * 5] == -1 || tCluster[cCol + cRow * 3] == -1 )
 								{
+									// There is no tile
 									tils.push_back(-1);
 								}
+								// Otherwise
 								else
 								{
+									// Designate tile
 									tils.push_back(_rooms[tCluster[cCol + cRow * 3]][rando][rCol + rRow * 9]);
 								}
 							}
@@ -81,7 +111,7 @@ std::vector<int> LevelSystem::generateDungeon(int level)
 			}
 		}
 	}
-
+	// Return blueprint
 	return tils;
 }
 
@@ -428,7 +458,7 @@ int LevelSystem::_specialClusters[2][9] =
 // Dungeon layouts
 int LevelSystem::_dungeonLayouts[10][5][25] =
 {
-	// Level 1
+	// Level 1 variations
 	{
 		{-1,-1,-1,-1,-1,  -1,-1,-1,16,-1,  -1,-1, 7, 9,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
 		{-1,-1,-1,-1,-1,  -1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
@@ -436,7 +466,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,-1,  -1,-1,-1,-1,16,  -1,-1, 7, 4, 9,  -1,-1,15,-1,-1},
 		{-1,-1,-1,-1,-1,  -1,-1,-1,16,-1,  -1,-1,-1, 5,-1,  -1,-1, 7, 9,-1,  -1,-1,15,-1,-1}
 	},
-	// Level 2
+	// Level 2 variations
 	{
 		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,16,  -1,-1,-1,-1, 5,  -1,-1, 7, 4, 9,  -1,-1,15,-1,-1},
 		{-1,-1,-1,-1,-1,  -1,-1,16,-1,-1,  -1, 7, 9,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
@@ -444,7 +474,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
 		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1}
 	},
-	// Level 3
+	// Level 3 variations
 	{
 		{-1,16,-1,-1,-1,  -1, 5, 2,-1,-1,  -1, 6,13,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
 		{-1,-1,-1,16,-1,  -1,-1,-1, 5,-1,  -1,-1,-1,11, 3,  -1,-1, 7, 9,-1,  -1,-1,15,-1,-1},
@@ -452,7 +482,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,  -1, 6,12, 3,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1},
 		{-1,-1,-1,16,-1,  -1, 1,12, 9,-1,  -1,-1, 5,-1,-1,  -1,-1, 5,-1,-1,  -1,-1,15,-1,-1}
 	},
-	// Level 4
+	// Level 4 variations
 	{
 		{-1,-1,-1,16,-1,  -1,-1,-1, 5,-1,  -1,-1, 7,14, 3,  -1,-1,11, 9,-1,  -1,-1,15,-1,-1},
 		{-1,16,-1,-1,-1,  -1, 5,-1,-1,-1,   7,13,-1,-1,-1,   6,10, 8,-1,-1,  -1,-1,15,-1,-1},
@@ -460,7 +490,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,16,-1,-1,-1,  -1,11, 3,-1,-1,   1,13,-1,-1,-1,  -1, 6, 8,-1,-1,  -1,-1,15,-1,-1},
 		{-1,16,-1,-1,-1,  -1, 5, 2,-1,-1,  -1,11,13,-1,-1,  -1, 6,13,-1,-1,  -1,-1,15,-1,-1}
 	},
-	// Level 5
+	// Level 5 variations
 	{
 		{-1,-1,-1,16,-1,  -1,-1, 2, 5,-1,  -1, 7,14,13,-1,  -1, 6,14, 9,-1,  -1,-1,15,-1,-1},
 		{-1,-1,-1,16,-1,  -1,-1, 1,14, 8,  -1,-1, 7,14, 9,  -1,-1,11, 9,-1,  -1,-1,15,-1,-1},
@@ -468,7 +498,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,16, 2,-1,-1,   1,14,13,-1,-1,  -1, 6,13,-1,-1,  -1,-1,11, 3,-1,  -1,-1,15,-1,-1},
 		{-1,16,-1,-1,-1,   1,14, 3,-1,-1,   7,13,-1,-1,-1,   6,10, 8,-1,-1,  -1,-1,15,-1,-1}
 	},
-	// Level 6
+	// Level 6 variations
 	{
 		{-1,-1,-1,16,-1,  -1, 6,12,13,-1,  -1, 5,11,10, 3,  -1,11, 9,-1,-1,  -1,15,-1,-1,-1},
 		{-1,-1,-1,-1,-1,  16,-1,-1,-1,-1,   5, 1,12, 8,-1,   6,12,10,13,-1,  -1, 0,-1,15,-1},
@@ -476,7 +506,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,-1,-1,-1,-1,  -1,-1,-1,-1,-1,   7, 8,-1, 2,16,  11,10,12,10, 9,  15,-1, 0,-1,-1},
 		{-1,16, 2,-1,-1,  -1, 6,14, 3,-1,  -1,-1,11, 8,-1,  -1,-1, 6,14, 3,  -1,-1,-1,15,-1}
 	},
-	// Level 7
+	// Level 7 variations
 	{
 		{-1,-1,-1,-1,16,  -1,-1, 1,12,13,  -1, 7, 4,13, 5,  -1, 6,12,10, 9,  -1,-1,15,-1,-1},
 		{-1,16,-1,-1,-1,   7,13,-1,-1,-1,   5,11,12, 8,-1,   6,14,10,13,-1,  -1,0,-1,15,-1},
@@ -484,7 +514,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,-1, 2,-1,16,  -1, 7,10,12,13,  -1, 6,12,10, 9,  -1, 1,13,-1,-1,  -1,-1,15,-1,-1},
 		{-1,-1,16, 2,-1,  -1, 1,14,13,-1,  -1, 7,10,14, 3,  -1, 6,12, 9,-1,  -1,-1,15,-1,-1}
 	},
-	// Level 8
+	// Level 8 variations
 	{
 		{16, 2,-1,-1,-1,  11,14,12, 3,-1,   6,13,11, 8,-1,  -1, 6,14, 9,-1,  -1,-1,15,-1,-1},
 		{-1, 7, 8,16,-1,   7,14,14,13,-1,   6,13,11, 9,-1,  -1,11, 9,-1,-1,  -1,15,-1,-1,-1},
@@ -492,7 +522,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{-1,-1,-1,-1,-1,  -1, 2,-1,-1,-1,   7,10,12, 3,-1,   6,12,14, 8,16,  -1,15, 6,10, 9},
 		{-1,-1, 7, 8,16,  -1, 7,14,14, 9,  -1, 6,13, 5,-1,  -1,-1,11,10, 3,  -1,-1,15,-1,-1}
 	},
-	// Level 9
+	// Level 9 variations
 	{
 		{-1,-1,-1,-1,-1,   7, 4,12, 8,-1,   5,16,11,14, 3,   6,13, 5,15,-1,  -1, 6,10, 3,-1},
 		{-1,-1,-1,16,-1,   7,12, 4,14, 8,   6,14, 8,11, 9,   7,10,10, 9,-1,  15,-1,-1,-1,-1},
@@ -500,7 +530,7 @@ int LevelSystem::_dungeonLayouts[10][5][25] =
 		{ 7,12, 3,-1,-1,  11,14,12, 8,-1,   0,15,11, 9,-1,  -1, 1,13,16,-1,  -1,-1, 6, 9,-1},
 		{-1,-1,-1,-1,-1,   2,-1, 7, 8,-1,  11,12,14,10, 8,  15,11,13,16, 5,  -1, 0, 6,10, 9}
 	},
-	// Level 10
+	// Level 10 variations
 	{
 		{16, 7, 8,-1,-1,  11,13,11, 3,-1,   6,14,10,12, 8,  -1,11, 4,14, 9,  -1, 0,-1,15,-1},
 		{-1, 2,-1,-1,16,   7,10,12, 8, 5,   6,12,13,11,13,  -1,11,10,14, 9,  -1,15,-1, 0,-1},

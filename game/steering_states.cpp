@@ -33,3 +33,15 @@ void FleeState::execute(Entity* owner, double dt) noexcept
     v.y = copysign(min(abs(v.y), s[0]->getSpeed()), v.y);
     s[0]->setVelocity(v);
 }
+
+// Melee
+
+
+// Arrow
+
+
+// Spell
+
+
+// Boss 
+
