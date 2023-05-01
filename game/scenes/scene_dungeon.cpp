@@ -96,6 +96,8 @@ void DungeonScene::Update(const double& dt)
 			player->update(dt);
 			Scene::Update(dt);
 
+			
+
 			// Set visibility status for near entities
 			for (auto e : ents.list)
 			{

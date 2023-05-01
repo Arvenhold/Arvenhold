@@ -2,6 +2,7 @@
 #include "system_physics.h"
 #include <LevelSystem.h>
 #include <SFML/Window/Keyboard.hpp>
+#include "../arvenhold.h"
 
 using namespace std;
 using namespace sf;
@@ -33,12 +34,12 @@ void PlayerPhysicsComponent::update(double dt)
 {
     Vector2f direction(0.0f, 0.0f);
 
-    if (Keyboard::isKeyPressed(Keyboard::A) || Keyboard::isKeyPressed(Keyboard::D))
+    if (Keyboard::isKeyPressed(Keyboard::Key(controls[1])) || Keyboard::isKeyPressed(Keyboard::Key(controls[3])))
     {
-        if (Keyboard::isKeyPressed(Keyboard::A)) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[1]))) {
             direction.x -= 1.0f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::D)) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[3]))) {
             direction.x += 1.0f;
         }
     }
@@ -47,12 +48,12 @@ void PlayerPhysicsComponent::update(double dt)
         dampen({ 0.9f, 1.0f });
     }
 
-    if (Keyboard::isKeyPressed(Keyboard::S) || Keyboard::isKeyPressed(Keyboard::W))
+    if (Keyboard::isKeyPressed(Keyboard::Key(controls[2])) || Keyboard::isKeyPressed(Keyboard::Key(controls[0])))
     {
-        if (Keyboard::isKeyPressed(Keyboard::W)) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[0]))) {
             direction.y -= 1.0f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::S)) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[2]))) {
             direction.y += 1.0f;
         }
     }
