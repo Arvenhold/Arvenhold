@@ -98,6 +98,8 @@ void DungeonScene::Update(const double& dt)
 			player->update(dt);
 			Scene::Update(dt);
 
+
+
 			// Set visibility status for near entities
 			for (auto e : ents.list)
 			{
@@ -113,6 +115,15 @@ void DungeonScene::Update(const double& dt)
 					// Set not visible
 					e->setVisible(false);
 				}
+				
+			}
+
+
+			auto phealth = player->get_components<HealthComponent>()[0];
+
+			for (auto e : enemies)
+			{
+				phealth->IsHit(player, e);
 			}
 
 			// Reset view on player position
@@ -206,9 +217,11 @@ void DungeonScene::Load()
 		auto enemyUI = makeEntity();
 		enemyUI->addComponent<HealthBarComponent>(player.get(), e.get());
 		hpBars.push_back(enemyUI);
+
 	}
 
 	// Set view to player position
+
 	view.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
 	view.setCenter(player.get()->getPosition());
 

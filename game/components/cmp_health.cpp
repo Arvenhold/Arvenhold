@@ -12,6 +12,7 @@ void HealthComponent::update(double dt)
 	// Reduce hit cooldown
 	_cooldown -= dt;
 
+	
 	// If cooldown is now over
 	if (_hit && _cooldown <= 0.f)
 	{
@@ -27,6 +28,24 @@ void HealthComponent::update(double dt)
 	}
 }
 
+void HealthComponent::IsHit(std::shared_ptr<Entity> p, std::shared_ptr<Entity> e)
+{
+	auto x1 = p->getPosition().x;
+	auto y1 = p->getPosition().y;
+	auto x2 = e->getPosition().x;
+	auto y2 = e->getPosition().y;
+	if((sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2)) <= 100.0f) && e->isAlive()) {
+		_hit = true;
+		takeDamage(5);
+		//_cooldown = 0.05;
+	}
+	else
+	{
+		_hit = false;
+	}
+	
+}
+
 /// <summary>
 /// Take some damage
 /// </summary>
@@ -38,8 +57,8 @@ void HealthComponent::takeDamage(int damage)
 	{
 		// Take damage
 		_currentHP -= damage;
-		_cooldown = 0.15f;
-		_hit = true;
+		_cooldown = 1.0f;
+		_hit = false;
 
 		// Give a red look to signify damage taken
 		_parent->get_components<SpriteComponent>()[0]->getSprite().setColor(Color(255, 150, 150));
