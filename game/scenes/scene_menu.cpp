@@ -28,28 +28,31 @@ void MenuScene::Update(const double& dt)
 	{
 		// Get position of mouse
 		auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
+
+		cout << mouse_pos.x << "," << mouse_pos.y << endl;
+
 		mouse_down = true;
 		
 		// If mouse is within the column of buttons
-		if (mouse_pos.x >= Engine::getWindowSize().x * 0.417 && mouse_pos.x <= Engine::getWindowSize().x * 0.568)
+		if (mouse_pos.x >= 814 && mouse_pos.x <= 1104)
 		{
 			// If clicked on "New Game" start new game
-			if (mouse_pos.y >= Engine::getWindowSize().y * 0.347 && mouse_pos.y <= Engine::getWindowSize().y * 0.421)
+			if (mouse_pos.y >= 560 && mouse_pos.y <= 640)
 			{
 				Engine::ChangeScene(&ogScene);
 			}
 			// If clicked on "Continue" load save game
-			if (mouse_pos.y >= Engine::getWindowSize().y * 0.444 && mouse_pos.y <= Engine::getWindowSize().y * 0.519)
+			if (mouse_pos.y >= 680 && mouse_pos.y <= 760)
 			{
 
 			}
 			// If clicked on "Settings" go to settings
-			if (mouse_pos.y >= Engine::getWindowSize().y * 0.546 && mouse_pos.y <= Engine::getWindowSize().y * 0.620)
+			if (mouse_pos.y >= 800 && mouse_pos.y <= 880)
 			{
-
+				Engine::ChangeScene(&sScene);
 			}
 			// If clicked on "Exit" exit game
-			if (mouse_pos.y >= Engine::getWindowSize().y * 0.648 && mouse_pos.y <= Engine::getWindowSize().y * 0.722)
+			if (mouse_pos.y >= 920 && mouse_pos.y <= 1000)
 			{
 				Engine::GetWindow().close();
 			}
@@ -84,12 +87,12 @@ void MenuScene::Load()
 
 	// Make background and put it in the middle of the screen
 	auto background = makeEntity();
-	background->setPosition({ 960, 540 });
+	//background->setPosition({ 0, 40 });
 	{
 		auto s = background->addComponent<SpriteComponent>();
 
 		s->setTexure(Resources::get<Texture>("mainmenu.png"));
-		s->getSprite().setOrigin({ 430,448 });
+		s->getSprite().setOrigin({ 0,80 });
 		s->getSprite().setScale({ 2,2 });
 	}
 
@@ -100,8 +103,10 @@ void MenuScene::Load()
 
 		t->getText()->setCharacterSize(192);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ 720, 162 });
-		t->getText()->setOrigin({ 80,20 });
+		auto width = t->getText()->getLocalBounds().width / 2.f;
+		auto height = t->getText()->getLocalBounds().height / 2.f;
+		t->getText()->setOrigin({ width, height });
+		t->getText()->setPosition({ 960, 180 });
 	}
 
 	// Create buttons
@@ -109,11 +114,11 @@ void MenuScene::Load()
 	{
 		auto btn = makeEntity();
 
-		btn->setPosition({ 960.0f, (594.0f + (i * 108.0f))});
+		btn->setPosition({ 960.0f, (600.0f + (i * 120.0f))});
 		auto s = btn->addComponent<SpriteComponent>();
 
 		s->setTexure(Resources::get<Texture>("button.png"));
-		s->getSprite().setOrigin({ 48,120 });
+		s->getSprite().setOrigin({ 120,40 });
 		s->getSprite().setScale({ 1.2f,1 });
 
 		// For "Continue" button, if no save to load, make it darker
@@ -131,7 +136,10 @@ void MenuScene::Load()
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ 931, 481});
+		auto width = t->getText()->getLocalBounds().width / 2.f;
+		auto height = t->getText()->getLocalBounds().height / 2.f;
+		t->getText()->setOrigin({ width, height });
+		t->getText()->setPosition({ 960, 590});
 	}
 
 	// Create "Continue" text
@@ -141,6 +149,9 @@ void MenuScene::Load()
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
+		auto width = t->getText()->getLocalBounds().width / 2.f;
+		auto height = t->getText()->getLocalBounds().height / 2.f;
+		t->getText()->setOrigin({ width, height });
 
 		// If no save to load
 		if (true)
@@ -148,7 +159,7 @@ void MenuScene::Load()
 			// Set button text darker
 			t->getText()->setFillColor(Color(130, 130, 0));
 		}
-		t->getText()->setPosition({ 960, 589 });
+		t->getText()->setPosition({ 960, 705 });
 	}
 
 	// Create "Settings" text
@@ -158,7 +169,10 @@ void MenuScene::Load()
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ 970, 697 });
+		auto width = t->getText()->getLocalBounds().width / 2.f;
+		auto height = t->getText()->getLocalBounds().height / 2.f;
+		t->getText()->setOrigin({ width, height });
+		t->getText()->setPosition({ 960, 830 });
 	}
 
 	// Create "Exit" text
@@ -168,11 +182,14 @@ void MenuScene::Load()
 
 		t->getText()->setCharacterSize(48);
 		t->getText()->setFillColor(Color(230, 230, 0));
-		t->getText()->setPosition({ 998, 805 });
+		auto width = t->getText()->getLocalBounds().width / 2.f;
+		auto height = t->getText()->getLocalBounds().height / 2.f;
+		t->getText()->setOrigin({ width, height });
+		t->getText()->setPosition({ 960, 945 });
 	}
 	
 	// Set view position
-	views.reset(FloatRect({ 100, 100 }, { 1920, 1080 }));
+	views.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
 
 	// Set view
 	Engine::GetWindow().setView(views);
