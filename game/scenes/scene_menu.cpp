@@ -14,6 +14,8 @@ using namespace sf;
 // The view out the window
 View views;
 
+float sRatio;
+
 /// <summary>
 /// Update main menu
 /// </summary>
@@ -34,25 +36,25 @@ void MenuScene::Update(const double& dt)
 		mouse_down = true;
 		
 		// If mouse is within the column of buttons
-		if (mouse_pos.x >= 814 && mouse_pos.x <= 1104)
+		if (mouse_pos.x >= 814 * sRatio && mouse_pos.x <= 1104 * sRatio)
 		{
 			// If clicked on "New Game" start new game
-			if (mouse_pos.y >= 560 && mouse_pos.y <= 640)
+			if (mouse_pos.y >= 560 * sRatio && mouse_pos.y <= 640 * sRatio)
 			{
 				Engine::ChangeScene(&ogScene);
 			}
 			// If clicked on "Continue" load save game
-			if (mouse_pos.y >= 680 && mouse_pos.y <= 760)
+			if (mouse_pos.y >= 680 * sRatio && mouse_pos.y <= 760 * sRatio)
 			{
 
 			}
 			// If clicked on "Settings" go to settings
-			if (mouse_pos.y >= 800 && mouse_pos.y <= 880)
+			if (mouse_pos.y >= 800 * sRatio && mouse_pos.y <= 880 * sRatio)
 			{
 				Engine::ChangeScene(&sScene);
 			}
 			// If clicked on "Exit" exit game
-			if (mouse_pos.y >= 920 && mouse_pos.y <= 1000)
+			if (mouse_pos.y >= 920 * sRatio && mouse_pos.y <= 1000 * sRatio)
 			{
 				Engine::GetWindow().close();
 			}
@@ -84,6 +86,8 @@ void MenuScene::Load()
 {
 	// Is loading
 	cout << " Scene Menu Load" << endl;
+
+	sRatio = (1.0f * gameHeight) / 1080.0f;
 
 	// Make background and put it in the middle of the screen
 	auto background = makeEntity();

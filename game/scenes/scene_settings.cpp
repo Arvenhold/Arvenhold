@@ -14,6 +14,8 @@ using namespace sf;
 View viewSettings;
 sf::Event event;
 
+float sSRatio;
+
 int GetButton() {
 	while (Engine::GetWindow().waitEvent(event)) //.GetEvent(event))
 	{
@@ -36,75 +38,63 @@ void SettingsScene::Update(const double& dt)
 		mouse_down = true;
 
 
-		if (mouse_pos.x >= 840 && mouse_pos.x <= 1080)
+		if (mouse_pos.x >= 840 * sSRatio && mouse_pos.x <= 1080 * sSRatio && mouse_pos.y >= 860 * sSRatio && mouse_pos.y <= 940 * sSRatio)
 		{
-			// If clicked on "Confirm" save settings
-			if (mouse_pos.y >= 860 && mouse_pos.y <= 940)
-			{
+			// Save settings
 
 
-				// Save settings
-
-
-				Engine::ChangeScene(&menuScene);
-			}
+			Engine::ChangeScene(&menuScene);
 		}
+
+		//Engine::
 
 		else 
 		{
 			// If mouse is within the row of buttons
-			if (mouse_pos.y >= 183 && mouse_pos.y <=  247)
+			if (mouse_pos.y >= 183 * sSRatio && mouse_pos.y <=  247 * sSRatio)
 			{
 				// If clicked on "720p" start new game
-				if (mouse_pos.x >= 644 && mouse_pos.x <= 836)
+				if (mouse_pos.x >= 644 * sSRatio && mouse_pos.x <= 836 * sSRatio)
 				{
-				
-
 					// Change resolution to 1280 x 720
 					gameHeight = 720;
 					gameWidth = 1280;
 					Engine::GetWindow().setSize(Vector2u(gameWidth, gameHeight));
-
+					sSRatio = (1.0f * gameHeight) / 1080.0f;
 				}
 				// If clicked on "1080p" load save game
-				if (mouse_pos.x >= 864 && mouse_pos.x <= 1056)
+				if (mouse_pos.x >= 864 * sSRatio && mouse_pos.x <= 1056 * sSRatio)
 				{
-				
-
 					// Change resolution to 1920 x 1080
 					gameHeight = 1080;
 					gameWidth = 1920;
 					Engine::GetWindow().setSize(Vector2u(gameWidth, gameHeight));
+					sSRatio = 1.0f;
 
 				}
 				// If clicked on "1440p" go to settings
-				if (mouse_pos.x >= 1084 && mouse_pos.x <= 1276)
+				if (mouse_pos.x >= 1084 * sSRatio && mouse_pos.x <= 1276 * sSRatio)
 				{
-				
-
 					// Change resolution to 2560 x 1440
 					gameHeight = 1440;
 					gameWidth = 2560;
 
 					Engine::GetWindow().setSize(Vector2u(gameWidth, gameHeight));
-
-
+					sSRatio = (1.0f * gameHeight) / 1080.0f;
 				}
 			}
 
 			// If mouse is within the column of buttons
-			if (mouse_pos.x >= 720 && mouse_pos.x <= 960)
+			if (mouse_pos.x >= 720 * sSRatio && mouse_pos.x <= 960 * sSRatio)
 			{
 				// If clicked on "Up" start new game
-				if (mouse_pos.y >= 348 && mouse_pos.y <= 412)
+				if (mouse_pos.y >= 348 * sSRatio && mouse_pos.y <= 412 * sSRatio)
 				{
 					auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
 
 					// Change text to that of button
 
 					controls[0] = GetButton();
-
 
 					text->SetText(FileHandler::ItoS(controls[0]));
 
@@ -114,7 +104,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Down" load save game
-				if (mouse_pos.y >= 428 && mouse_pos.y <= 492)
+				if (mouse_pos.y >= 428 * sSRatio && mouse_pos.y <= 492 * sSRatio)
 				{
 					auto text = ents.find("text")[1]->get_components<TextComponent>()[0];
 
@@ -131,7 +121,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Left" go to settings
-				if (mouse_pos.y >= 508 && mouse_pos.y <= 572)
+				if (mouse_pos.y >= 508 * sSRatio && mouse_pos.y <= 572 * sSRatio)
 				{
 					auto text = ents.find("text")[2]->get_components<TextComponent>()[0];
 
@@ -148,7 +138,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Right" exit game
-				if (mouse_pos.y >= 588 && mouse_pos.y <= 652)
+				if (mouse_pos.y >= 588 * sSRatio && mouse_pos.y <= 652 * sSRatio)
 				{
 					auto text = ents.find("text")[3]->get_components<TextComponent>()[0];
 
@@ -165,7 +155,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Attack" go to settings
-				if (mouse_pos.y >= 668 && mouse_pos.y <= 732)
+				if (mouse_pos.y >= 668 * sSRatio && mouse_pos.y <= 732 * sSRatio)
 				{
 					auto text = ents.find("text")[4]->get_components<TextComponent>()[0];
 
@@ -182,7 +172,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Potion" exit game
-				if (mouse_pos.y >= 748 && mouse_pos.y <= 812)
+				if (mouse_pos.y >= 748 * sSRatio && mouse_pos.y <= 812 * sSRatio)
 				{
 					auto text = ents.find("text")[5]->get_components<TextComponent>()[0];
 
@@ -218,6 +208,8 @@ void SettingsScene::Load()
 {
 	// Loading overground
 	cout << " Scene Settings Load" << endl;
+
+	sSRatio = (1.0f * gameHeight) / 1080.0f;
 
 	// Make background and put it in the middle of the screen
 	auto background = makeEntity();
