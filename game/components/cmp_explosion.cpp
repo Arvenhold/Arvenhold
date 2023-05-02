@@ -33,7 +33,7 @@ void ExplodeComponent::update(double dt)
                     _hit = true;
 
                     // Deal big damage
-                    e->get_components<HealthComponent>()[0]->takeDamage(100);
+                    e->get_components<HealthComponent>()[0]->takeDamage(60);
 
                     // Spawn more booms
                     if (_hits < 4 && _cast)
