@@ -8,6 +8,7 @@ using namespace std;
 DungeonScene dungeonScene;
 MenuScene menuScene;
 OverGroundScene ogScene;
+SettingsScene sScene;
 
 // Sindow size
 int gameWidth;

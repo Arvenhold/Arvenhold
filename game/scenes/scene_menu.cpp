@@ -34,7 +34,7 @@ void MenuScene::Update(const double& dt)
 		mouse_down = true;
 		
 		// If mouse is within the column of buttons
-		if (mouse_pos.x >= 814 && mouse_pos.x <= Engine::getWindowSize().x * 1104)
+		if (mouse_pos.x >= 814 && mouse_pos.x <= 1104)
 		{
 			// If clicked on "New Game" start new game
 			if (mouse_pos.y >= 560 && mouse_pos.y <= 640)
@@ -49,7 +49,7 @@ void MenuScene::Update(const double& dt)
 			// If clicked on "Settings" go to settings
 			if (mouse_pos.y >= 800 && mouse_pos.y <= 880)
 			{
-
+				Engine::ChangeScene(&sScene);
 			}
 			// If clicked on "Exit" exit game
 			if (mouse_pos.y >= 920 && mouse_pos.y <= 1000)
