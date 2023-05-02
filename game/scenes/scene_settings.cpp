@@ -11,6 +11,16 @@ using namespace std;
 using namespace sf;
 
 View viewSettings;
+sf::Event event;
+
+int GetButton() {
+	while (Engine::GetWindow().waitEvent(event)) //.GetEvent(event))
+	{
+		if (event.type == Event::KeyPressed) {
+			return event.key.code;
+		}
+	}
+}
 
 void SettingsScene::Update(const double& dt)
 {
@@ -50,7 +60,9 @@ void SettingsScene::Update(const double& dt)
 				
 
 					// Change resolution to 1280 x 720
-
+					gameHeight = 720;
+					gameWidth = 1280;
+					Engine::GetWindow().setSize(Vector2u(gameWidth, gameHeight));
 
 				}
 				// If clicked on "1080p" load save game
@@ -59,7 +71,9 @@ void SettingsScene::Update(const double& dt)
 				
 
 					// Change resolution to 1920 x 1080
-
+					gameHeight = 1080;
+					gameWidth = 1920;
+					Engine::GetWindow().setSize(Vector2u(gameWidth, gameHeight));
 
 				}
 				// If clicked on "1440p" go to settings
@@ -68,6 +82,10 @@ void SettingsScene::Update(const double& dt)
 				
 
 					// Change resolution to 2560 x 1440
+					gameHeight = 1440;
+					gameWidth = 2560;
+
+					Engine::GetWindow().setSize(Vector2u(gameWidth, gameHeight));
 
 
 				}
@@ -84,8 +102,10 @@ void SettingsScene::Update(const double& dt)
 
 					// Change text to that of button
 
+					controls[0] = GetButton();
 
-					text->SetText("Works");
+
+					text->SetText(to_string(controls[0]));
 
 					// Reset origin
 					auto width = text->getText()->getLocalBounds().width / 2.f;
@@ -100,8 +120,9 @@ void SettingsScene::Update(const double& dt)
 
 					// Change text to that of button
 
+					controls[2] = GetButton();
 
-					text->SetText("Works");
+					text->SetText(to_string(controls[2]));
 
 					// Reset origin
 					auto width = text->getText()->getLocalBounds().width / 2.f;
@@ -116,8 +137,9 @@ void SettingsScene::Update(const double& dt)
 
 					// Change text to that of button
 
+					controls[1] = GetButton();
 
-					text->SetText("Works");
+					text->SetText(to_string(controls[1]));
 
 					// Reset origin
 					auto width = text->getText()->getLocalBounds().width / 2.f;
@@ -132,8 +154,9 @@ void SettingsScene::Update(const double& dt)
 
 					// Change text to that of button
 
+					controls[3] = GetButton();
 
-					text->SetText("Works");
+					text->SetText(to_string(controls[3]));
 
 					// Reset origin
 					auto width = text->getText()->getLocalBounds().width / 2.f;
@@ -148,8 +171,9 @@ void SettingsScene::Update(const double& dt)
 
 					// Change text to that of button
 
+					controls[4] = GetButton();
 
-					text->SetText("Works");
+					text->SetText(to_string(controls[4]));
 
 					// Reset origin
 					auto width = text->getText()->getLocalBounds().width / 2.f;
@@ -164,8 +188,9 @@ void SettingsScene::Update(const double& dt)
 
 					// Change text to that of button
 
+					controls[5] = GetButton();
 
-					text->SetText("Works");
+					text->SetText(to_string(controls[5]));
 
 					// Reset origin
 					auto width = text->getText()->getLocalBounds().width / 2.f;

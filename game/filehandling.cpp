@@ -70,6 +70,17 @@ void FileHandler::load(int &gameHeight, int &gameWidth) {
 
 	fstream file("res/saves/save_1.txt");
 	if (!file.is_open()) {
+		file << "1920,1080,22,0,18,3,200,203" << endl;
+		controls[0] = 22;
+		controls[1] = 0;
+		controls[2] = 18;
+		controls[3] = 3;
+		controls[4] = 200;
+		controls[5] = 203;
+		gameHeight = 1080;
+		gameWidth = 1920;
+
+
 		cout << " Failed to open" << endl;
 	}
 	else {
@@ -108,7 +119,7 @@ void FileHandler::load(int &gameHeight, int &gameWidth) {
 	//take in the file from save, read its contents, the first 2 will be game width and height
 }
 
-char FileHandler::KtoC(sf::Keyboard::Key k) {
+string FileHandler::ItoS(sf::Keyboard::Key k) {
 	switch (k) {
 	case Keyboard::Key::A:
 		return 'a';

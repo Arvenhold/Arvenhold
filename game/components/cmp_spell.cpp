@@ -7,6 +7,7 @@
 #include "cmp_frostorb.h"
 #include <system_resources.h>
 #include "cmp_lightbolt.h"
+#include "../arvenhold.h"
 
 using namespace std;
 using namespace sf;
@@ -44,30 +45,62 @@ void SpellComponent::update(double dt)
     }
 
     // Cast fireball
-    if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Num1) || Joystick::isButtonPressed(0,2))) 
-    {
-        fire();                                     // Cast the spell
-        _firetime = 1.f;                            // Set cooldown
-        _fireS->setColor(Color(150, 150, 150));     // Darken UI
-        _fCast = true;                              // Set casted
-    }
 
-    // Cast lightning strike
-    if (_lighttime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Num2) || Joystick::isButtonPressed(0, 3))) 
+    if (controls[4] < 200)
     {
-        lightning();                                // Cast the spell
-        _lighttime = 1.5f;                          // Set cooldown
-        _lightS->setColor(Color(150, 150, 150));    // Darken UI
-        _lCast = true;                              // Set casted
-    }
+        if (_firetime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 2)))
+        {
+            fire();                                     // Cast the spell
+            _firetime = 1.f;                            // Set cooldown
+            _fireS->setColor(Color(150, 150, 150));     // Darken UI
+            _fCast = true;                              // Set casted
+        }
 
-    // Cast frost orb
-    if (_coldtime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Num3) || Joystick::isButtonPressed(0, 1))) 
+        // Cast lightning strike
+        if (_lighttime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 3)))
+        {
+            lightning();                                // Cast the spell
+            _lighttime = 1.5f;                          // Set cooldown
+            _lightS->setColor(Color(150, 150, 150));    // Darken UI
+            _lCast = true;                              // Set casted
+        }
+
+        // Cast frost orb
+        if (_coldtime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4]-200)) || Joystick::isButtonPressed(0, 1)))
+        {
+            cold();                                     // Cast the spell
+            _coldtime = 3.f;                            // Set cooldown
+            _frostS->setColor(Color(150, 150, 150));    // Darken UI
+            _cCast = true;                              // Set casted
+        }
+    }
+    else if (controls[4] >= 200)
     {
-        cold();                                     // Cast the spell
-        _coldtime = 3.f;                            // Set cooldown
-        _frostS->setColor(Color(150, 150, 150));    // Darken UI
-        _cCast = true;                              // Set casted
+        if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 2)))
+        {
+            fire();                                     // Cast the spell
+            _firetime = 1.f;                            // Set cooldown
+            _fireS->setColor(Color(150, 150, 150));     // Darken UI
+            _fCast = true;                              // Set casted
+        }
+
+        // Cast lightning strike
+        if (_lighttime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 3)))
+        {
+            lightning();                                // Cast the spell
+            _lighttime = 1.5f;                          // Set cooldown
+            _lightS->setColor(Color(150, 150, 150));    // Darken UI
+            _lCast = true;                              // Set casted
+        }
+
+        // Cast frost orb
+        if (_coldtime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 1)))
+        {
+            cold();                                     // Cast the spell
+            _coldtime = 3.f;                            // Set cooldown
+            _frostS->setColor(Color(150, 150, 150));    // Darken UI
+            _cCast = true;                              // Set casted
+        }
     }
 }
 
