@@ -119,128 +119,205 @@ void FileHandler::load(int &gameHeight, int &gameWidth) {
 	//take in the file from save, read its contents, the first 2 will be game width and height
 }
 
-string FileHandler::ItoS(sf::Keyboard::Key k) {
+string FileHandler::ItoS(int k) {
 	switch (k) {
-	case Keyboard::Key::A:
-		return 'a';
+	case 0:
+		return "A";
 		break;
 
-	case Keyboard::Key::B:
-		return 'b';
+	case 1:
+		return "B";
 		break;
 
-	case Keyboard::Key::C:
-		return 'c';
+	case 2:
+		return "C";
 		break;
 
-	case Keyboard::Key::D:
-		return 'd';
+	case 3:
+		return "D";
 		break;
 
-	case Keyboard::Key::E:
-		return 'e';
+	case 4:
+		return "E";
 		break;
 
-	case Keyboard::Key::F:
-		return 'f';
+	case 5:
+		return "F";
 		break;
 
-	case Keyboard::Key::G:
-		return 'g';
+	case 6:
+		return "G";
 		break;
 
-	case Keyboard::Key::H:
-		return 'h';
+	case 7:
+		return "H";
 		break;
 
-	case Keyboard::Key::I:
-		return 'i';
+	case 8:
+		return "I";
 		break;
 
-	case Keyboard::Key::J:
-		return 'j';
+	case 9:
+		return "J";
 		break;
 
-	case Keyboard::Key::K:
-		return 'k';
+	case 10:
+		return "K";
 		break;
 
-	case Keyboard::Key::L:
-		return 'l';
+	case 11:
+		return "L";
 		break;
 
-	case Keyboard::Key::M:
-		return 'm';
+	case 12:
+		return "M";
 		break;
 
-	case Keyboard::Key::N:
-		return 'n';
+	case 13:
+		return "N";
 		break;
 
-	case Keyboard::Key::O:
-		return 'o';
+	case 14:
+		return "O";
 		break;
 
-	case Keyboard::Key::P:
-		return 'p';
+	case 15:
+		return "P";
 		break;
 
-	case Keyboard::Key::Q:
-		return 'q';
+	case 16:
+		return "Q";
 		break;
 
-	case Keyboard::Key::R:
-		return 'r';
+	case 17:
+		return "R";
 		break;
 
-	case Keyboard::Key::S:
-		return 's';
+	case 18:
+		return "S";
 		break;
 
-	case Keyboard::Key::T:
-		return 't';
+	case 19:
+		return "T";
 		break;
 
-	case Keyboard::Key::U:
-		return 'u';
+	case 20:
+		return "U";
 		break;
 
-	case Keyboard::Key::V:
-		return 'v';
+	case 21:
+		return "V";
 		break;
 
-	case Keyboard::Key::W:
-		return 'w';
+	case 22:
+		return "W";
 		break;
 
-	case Keyboard::Key::X:
-		return 'x';
+	case 23:
+		return "X";
 		break;
 
-	case Keyboard::Key::Y:
-		return 'y';
+	case 24:
+		return "Y";
 		break;
 
-	case Keyboard::Key::Z:
-		return 'z';
+	case 25:
+		return "Z";
 		break;
+	case 26:
+		return "Num0";
+		break;
+		
+	case 27:
+		return "Num1";
+		break;
+
+	case 28:
+		return "Num2";
+		break;
+		
+	case 29:
+		return "Num3";
+		break;
+		
+	case 30:
+		return "Num4";
+		break;
+
+	case 31:
+		return "Num5";
+		break;
+			
+	case 32:
+		return "Num6";
+		break;
+		
+	case 33:
+		return "Num7";
+		break;
+		
+	case 34:
+		return "Num8";
+		break;
+
+	case 35:
+		return "Num9";
+		break;
+
+	case 36:
+		return "Escape";
+		break;
+
+	case 37:
+		return "LControl";
+		break;
+
+	case 38:
+		return "LShift";
+		break;
+
+	case 200:
+		return "Left click";
+		break;
+
+	case 201:
+		return "Right click";
+		break;
+
+	case 202:
+		return "Middle";
+		break;
+
+	case 203:
+		return "Button_1";
+		break;
+
+	case 204:
+		return "Button_1";
+		break;
+
+	case 205:
+		return "Button_1";
+		break;
+
 	default:
-		return '0';
+		return "no key";
 		break;
 	}
 }
 
-sf::Keyboard::Key FileHandler::CtoK(char c) {
+/*
+int FileHandler::StoI(string c) {
 	switch (c) {
-	case 'a':
+	case "a":
 		return Keyboard::Key::A;
 		break;
 
-	case 'b':
+	case "b":
 		return Keyboard::Key::B;
 		break;
 
-	case 'c':
+	case "c":
 		return Keyboard::Key::C;
 		break;
 
@@ -341,3 +418,4 @@ sf::Keyboard::Key FileHandler::CtoK(char c) {
 	}
 
 }
+*/
