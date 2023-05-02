@@ -22,8 +22,6 @@ void SettingsScene::Update(const double& dt)
 		// Get position of mouse
 		auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
 
-		cout << mouse_pos.x << "," << mouse_pos.y << endl;
-
 		mouse_down = true;
 
 
@@ -41,139 +39,143 @@ void SettingsScene::Update(const double& dt)
 			}
 		}
 
-
-		// If mouse is within the row of buttons
-		if (mouse_pos.y >= 183 && mouse_pos.y <=  247)
+		else 
 		{
-			// If clicked on "720p" start new game
-			if (mouse_pos.x >= 644 && mouse_pos.x <= 836)
+			// If mouse is within the row of buttons
+			if (mouse_pos.y >= 183 && mouse_pos.y <=  247)
 			{
+				// If clicked on "720p" start new game
+				if (mouse_pos.x >= 644 && mouse_pos.x <= 836)
+				{
 				
 
-				// Change resolution to 1280 x 720
+					// Change resolution to 1280 x 720
 
 
+				}
+				// If clicked on "1080p" load save game
+				if (mouse_pos.x >= 864 && mouse_pos.x <= 1056)
+				{
+				
+
+					// Change resolution to 1920 x 1080
+
+
+				}
+				// If clicked on "1440p" go to settings
+				if (mouse_pos.x >= 1084 && mouse_pos.x <= 1276)
+				{
+				
+
+					// Change resolution to 2560 x 1440
+
+
+				}
 			}
-			// If clicked on "1080p" load save game
-			if (mouse_pos.x >= 864 && mouse_pos.x <= 1056)
+
+			// If mouse is within the column of buttons
+			if (mouse_pos.x >= 720 && mouse_pos.x <= 960)
 			{
-				
-
-				// Change resolution to 1920 x 1080
-
-
-			}
-			// If clicked on "1440p" go to settings
-			if (mouse_pos.x >= 1084 && mouse_pos.x <= 1276)
-			{
-				
-
-				// Change resolution to 2560 x 1440
+				// If clicked on "Up" start new game
+				if (mouse_pos.y >= 348 && mouse_pos.y <= 412)
+				{
+					auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
 
 
+					// Change text to that of button
+
+
+					text->SetText("Works");
+
+					// Reset origin
+					auto width = text->getText()->getLocalBounds().width / 2.f;
+					auto height = text->getText()->getLocalBounds().height / 2.f;
+					text->getText()->setOrigin({ width, height });
+				}
+				// If clicked on "Down" load save game
+				if (mouse_pos.y >= 428 && mouse_pos.y <= 492)
+				{
+					auto text = ents.find("text")[1]->get_components<TextComponent>()[0];
+
+
+					// Change text to that of button
+
+
+					text->SetText("Works");
+
+					// Reset origin
+					auto width = text->getText()->getLocalBounds().width / 2.f;
+					auto height = text->getText()->getLocalBounds().height / 2.f;
+					text->getText()->setOrigin({ width, height });
+				}
+				// If clicked on "Left" go to settings
+				if (mouse_pos.y >= 508 && mouse_pos.y <= 572)
+				{
+					auto text = ents.find("text")[2]->get_components<TextComponent>()[0];
+
+
+					// Change text to that of button
+
+
+					text->SetText("Works");
+
+					// Reset origin
+					auto width = text->getText()->getLocalBounds().width / 2.f;
+					auto height = text->getText()->getLocalBounds().height / 2.f;
+					text->getText()->setOrigin({ width, height });
+				}
+				// If clicked on "Right" exit game
+				if (mouse_pos.y >= 588 && mouse_pos.y <= 652)
+				{
+					auto text = ents.find("text")[3]->get_components<TextComponent>()[0];
+
+
+					// Change text to that of button
+
+
+					text->SetText("Works");
+
+					// Reset origin
+					auto width = text->getText()->getLocalBounds().width / 2.f;
+					auto height = text->getText()->getLocalBounds().height / 2.f;
+					text->getText()->setOrigin({ width, height });
+				}
+				// If clicked on "Attack" go to settings
+				if (mouse_pos.y >= 668 && mouse_pos.y <= 732)
+				{
+					auto text = ents.find("text")[4]->get_components<TextComponent>()[0];
+
+
+					// Change text to that of button
+
+
+					text->SetText("Works");
+
+					// Reset origin
+					auto width = text->getText()->getLocalBounds().width / 2.f;
+					auto height = text->getText()->getLocalBounds().height / 2.f;
+					text->getText()->setOrigin({ width, height });
+				}
+				// If clicked on "Potion" exit game
+				if (mouse_pos.y >= 748 && mouse_pos.y <= 812)
+				{
+					auto text = ents.find("text")[5]->get_components<TextComponent>()[0];
+
+
+					// Change text to that of button
+
+
+					text->SetText("Works");
+
+					// Reset origin
+					auto width = text->getText()->getLocalBounds().width / 2.f;
+					auto height = text->getText()->getLocalBounds().height / 2.f;
+					text->getText()->setOrigin({ width, height });
+				}
 			}
 		}
 
-		// If mouse is within the column of buttons
-		if (mouse_pos.x >= 720 && mouse_pos.x <= 960)
-		{
-			// If clicked on "Up" start new game
-			if (mouse_pos.y >= 348 && mouse_pos.y <= 412)
-			{
-				auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
-
-				// Change text to that of button
-
-
-				text->SetText("Works");
-
-				// Reset origin
-				auto width = text->getText()->getLocalBounds().width / 2.f;
-				auto height = text->getText()->getLocalBounds().height / 2.f;
-				text->getText()->setOrigin({ width, height });
-			}
-			// If clicked on "Down" load save game
-			if (mouse_pos.y >= 428 && mouse_pos.y <= 492)
-			{
-				auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
-
-				// Change text to that of button
-
-
-				text->SetText("Works");
-
-				// Reset origin
-				auto width = text->getText()->getLocalBounds().width / 2.f;
-				auto height = text->getText()->getLocalBounds().height / 2.f;
-				text->getText()->setOrigin({ width, height });
-			}
-			// If clicked on "Left" go to settings
-			if (mouse_pos.y >= 508 && mouse_pos.y <= 572)
-			{
-				auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
-
-				// Change text to that of button
-
-
-				text->SetText("Works");
-
-				// Reset origin
-				auto width = text->getText()->getLocalBounds().width / 2.f;
-				auto height = text->getText()->getLocalBounds().height / 2.f;
-				text->getText()->setOrigin({ width, height });
-			}
-			// If clicked on "Right" exit game
-			if (mouse_pos.y >= 588 && mouse_pos.y <= 652)
-			{
-				auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
-
-				// Change text to that of button
-
-
-				text->SetText("Works");
-
-				// Reset origin
-				auto width = text->getText()->getLocalBounds().width / 2.f;
-				auto height = text->getText()->getLocalBounds().height / 2.f;
-				text->getText()->setOrigin({ width, height });
-			}
-			// If clicked on "Attack" go to settings
-			if (mouse_pos.y >= 668 && mouse_pos.y <= 732)
-			{
-				auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
-
-				// Change text to that of button
-
-
-				text->SetText("Works");
-
-				// Reset origin
-				auto width = text->getText()->getLocalBounds().width / 2.f;
-				auto height = text->getText()->getLocalBounds().height / 2.f;
-				text->getText()->setOrigin({ width, height });
-			}
-			// If clicked on "Potion" exit game
-			if (mouse_pos.y >= 748 && mouse_pos.y <= 812)
-			{
-				auto text = ents.find("text")[0]->get_components<TextComponent>()[0];
-
-
-				// Change text to that of button
-
-
-				text->SetText("Works");
-
-				// Reset origin
-				auto width = text->getText()->getLocalBounds().width / 2.f;
-				auto height = text->getText()->getLocalBounds().height / 2.f;
-				text->getText()->setOrigin({ width, height });
-			}
-		}
+		
 	}
 
 	// If mouse not clicked, set mouse not clicked
