@@ -52,7 +52,16 @@ public:
 
 
 // Spell
-
+class Cast : public SteeringBehaviour {
+private:
+    Entity* _character;
+    Entity* _target;
+public:
+    Cast() = delete;
+    Cast(Entity* character, Entity* target)
+        : _character(character), _target(target) { }
+    SteeringOutput getSteering() const noexcept;
+};
 
 // Boss 
 

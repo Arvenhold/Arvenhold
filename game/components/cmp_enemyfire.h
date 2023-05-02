@@ -6,26 +6,28 @@
 class EnemyFireComponent : public Component {
 protected:
 
-
-	//use spell
-	void fire() const;
-
 	// cooldown
 	float _cooldown;
-	bool _ready;
+	//bool _ready;
 
 	//radius
-	float _radius;
+	//float _radius;
+
+	float _damage;
+
+	int _type;
 	
 	//has it been cast lately
-	bool _cast;
+	//bool _cast;
 
 	//sprite
-	sf::Sprite* _sprite;
+	//sf::Sprite* _sprite;
 public:
+
+	void fire();
 	void update(double dt) override;
 	void render() override {}
-	explicit EnemyFireComponent::EnemyFireComponent(Entity* p, float radius, sf::Sprite* s);
+	explicit EnemyFireComponent::EnemyFireComponent(Entity* p, float damage, int type);
 	EnemyFireComponent() = delete;
 };
 
@@ -33,16 +35,18 @@ public:
 
 class EnemyAttackComponent : public Component {
 protected:
+
 	// Lifetime of spell
 	float _lifetime;
-
 
 	// Has it hit anything?
 	bool _hit;
 
+	float _damage;
+
 public:
 	void update(double dt) override;
 	void render() override {}
-	explicit EnemyAttackComponent(Entity* p, sf::Vector2f direction, float lifetime);
+	explicit EnemyAttackComponent(Entity* p, sf::Vector2f direction, float damage, int type, float lifetime);
 	EnemyAttackComponent() = delete;
 };

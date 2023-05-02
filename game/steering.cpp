@@ -28,7 +28,14 @@ SteeringOutput Flee::getSteering() const noexcept {
 
 
 // Spell
-
+SteeringOutput Cast::getSteering() const noexcept
+{
+    SteeringOutput steering;
+    steering.direction = Vector2f(0, 0);
+    steering.rotation = 0.0f;
+    return steering;
+}
 
 // Boss 
+
 

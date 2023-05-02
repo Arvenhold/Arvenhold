@@ -32,11 +32,20 @@ public:
 // Melee
 
 
+
 // Arrow
 
 
 // Spell
 
+class CastState : public State
+{
+private:
+    Cast _steering;
+public:
+    CastState(std::shared_ptr<Entity> owner, std::shared_ptr<Entity> player) : _steering(owner.get(), player.get()) {}
+    void execute(Entity*, double) noexcept override;
+};
 
 // Boss 
 
