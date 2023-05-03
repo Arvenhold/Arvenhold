@@ -25,6 +25,8 @@ void MenuScene::Update(const double& dt)
 	// Mouse is not clicked
 	static bool mouse_down = false;
 
+	sRatio = (1.0f * Engine::getWindowSize().y) / 1080.0f;
+
 	// If mouse gets clicked
 	if (Mouse::isButtonPressed(Mouse::Left) && !mouse_down) 
 	{

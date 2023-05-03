@@ -21,14 +21,11 @@ SteeringOutput Flee::getSteering() const noexcept {
     return steering;
 }
 
-// Melee
-
-
-// Arrow
-
-
-// Spell
-SteeringOutput Cast::getSteering() const noexcept
+/// <summary>
+/// Melee hit
+/// </summary>
+/// <returns></returns>
+SteeringOutput Hit::getSteering() const noexcept
 {
     SteeringOutput steering;
     steering.direction = Vector2f(0, 0);
@@ -36,6 +33,15 @@ SteeringOutput Cast::getSteering() const noexcept
     return steering;
 }
 
-// Boss 
 
-
+/// <summary>
+/// Enemy casting steering state
+/// </summary>
+/// <returns></returns>
+SteeringOutput Cast::getSteering() const noexcept
+{
+    SteeringOutput steering;
+    steering.direction = Vector2f(0, 0);
+    steering.rotation = 0.0f;
+    return steering;
+}

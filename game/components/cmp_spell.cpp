@@ -49,7 +49,7 @@ void SpellComponent::update(double dt)
 
     // Cast fireball
 
-    if (controls[4] < 200)
+    if (controls[4] >= 200)
     {
         if (_firetime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 2)))
         {
@@ -77,7 +77,7 @@ void SpellComponent::update(double dt)
             _cCast = true;                              // Set casted
         }
     }
-    else if (controls[4] >= 200)
+    else if (controls[4] < 200)
     {
         if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 2)))
         {
@@ -117,7 +117,7 @@ void SpellComponent::fire() const {
     auto yDir = 1.0f;
 
     // Check for mouse or controller
-    if (true)
+    if (!Joystick::isConnected(0))
     {
         // Set direction to towards mouse
         xDir = 1.0f * Mouse::getPosition(Engine::GetWindow()).x - Engine::getWindowSize().x * 0.5f;
@@ -126,8 +126,8 @@ void SpellComponent::fire() const {
     else
     {
         // Set direction to towards player movement
-        xDir = Joystick::getAxisPosition(0, Joystick::X);
-        yDir = Joystick::getAxisPosition(0, Joystick::Y);
+        xDir = Joystick::getAxisPosition(0, Joystick::U);
+        yDir = Joystick::getAxisPosition(0, Joystick::R);
     }
 
     // Normalise direction vector

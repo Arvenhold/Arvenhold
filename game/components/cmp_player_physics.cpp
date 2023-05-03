@@ -34,12 +34,12 @@ void PlayerPhysicsComponent::update(double dt)
 {
     Vector2f direction(0.0f, 0.0f);
 
-    if (Keyboard::isKeyPressed(Keyboard::Key(controls[1])) || Keyboard::isKeyPressed(Keyboard::Key(controls[3])))
+    if (Keyboard::isKeyPressed(Keyboard::Key(controls[1])) || Keyboard::isKeyPressed(Keyboard::Key(controls[3])) || Joystick::getAxisPosition(0, Joystick::X) > 0 || Joystick::getAxisPosition(0, Joystick::X) < 0)
     {
-        if (Keyboard::isKeyPressed(Keyboard::Key(controls[1]))) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[1])) || Joystick::getAxisPosition(0, Joystick::X) < 0) {
             direction.x -= 1.0f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::Key(controls[3]))) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[3])) || Joystick::getAxisPosition(0, Joystick::X) > 0) {
             direction.x += 1.0f;
         }
     }
@@ -48,12 +48,12 @@ void PlayerPhysicsComponent::update(double dt)
         dampen({ 0.9f, 1.0f });
     }
 
-    if (Keyboard::isKeyPressed(Keyboard::Key(controls[2])) || Keyboard::isKeyPressed(Keyboard::Key(controls[0])))
+    if (Keyboard::isKeyPressed(Keyboard::Key(controls[2])) || Keyboard::isKeyPressed(Keyboard::Key(controls[0])) || Joystick::getAxisPosition(0,Joystick::Y) > 0 || Joystick::getAxisPosition(0, Joystick::Y) < 0)
     {
-        if (Keyboard::isKeyPressed(Keyboard::Key(controls[0]))) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[0])) || Joystick::getAxisPosition(0, Joystick::Y) > 0) {
             direction.y -= 1.0f;
         }
-        if (Keyboard::isKeyPressed(Keyboard::Key(controls[2]))) {
+        if (Keyboard::isKeyPressed(Keyboard::Key(controls[2])) || Joystick::getAxisPosition(0, Joystick::Y) < 0) {
             direction.y += 1.0f;
         }
     }

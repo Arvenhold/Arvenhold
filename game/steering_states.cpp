@@ -1,6 +1,7 @@
 #include "steering_states.h"
 #include "components/cmp_sprite.h"
 #include "components/cmp_enemyfire.h"
+#include "components/cmp_health.h"
 
 using namespace sf;
 using namespace std;
@@ -36,19 +37,22 @@ void FleeState::execute(Entity* owner, double dt) noexcept
 }
 
 // Melee
+void HitState::execute(Entity* owner, double dt) noexcept
+{
+    auto s = owner->get_components<EnemyHitComponent>()[0];
+    s->hit();
+}
 
 
-// Arrow
-
-
-// Spell
+/// <summary>
+/// Casting state
+/// </summary>
+/// <param name="owner">- Enemy</param>
+/// <param name="dt">- delta time</param>
+/// <returns></returns>
 void CastState::execute(Entity* owner, double dt) noexcept
 {
     auto s = owner->get_components<EnemyFireComponent>()[0];
 
     s->fire();
 }
-
-// Boss 
-
-

@@ -24,6 +24,7 @@ using namespace sf;
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> boss;
 static shared_ptr<Entity> ui;
+static shared_ptr<Entity> door;
 
 // Healthbars
 vector<shared_ptr<Entity>> hpBars;
@@ -40,6 +41,10 @@ vector<Vector2f> pillarPos;
 // Current dungeon level
 int level;
 
+// Is boss dead
+bool bossDead;
+bool doorOpened;
+
 /// <summary>
 /// Update dungeon
 /// </summary>
@@ -47,9 +52,21 @@ int level;
 void DungeonScene::Update(const double& dt) 
 {
 	// If pressed tab go to main menu
-	if (Keyboard::isKeyPressed(Keyboard::Key(60)) || player->is_fordeletion())
+	if (Keyboard::isKeyPressed(Keyboard::Key(60)))
 	{
 		Engine::ChangeScene(&menuScene);
+	}
+	else if (player->is_fordeletion())
+	{
+		Engine::ChangeScene(&dScene);
+
+
+		// Increment dungeon level
+
+
+		// Save game
+
+
 	}
 	else
 	{
@@ -60,6 +77,12 @@ void DungeonScene::Update(const double& dt)
 		{
 			// Go touch grass
 			Engine::ChangeScene(&ogScene);
+		}
+		else if (pPos.x < bossPos.x + 48 && pPos.x > bossPos.x - 48 && pPos.y > bossPos.y - 1320 && pPos.y < startPos.y - 1280)
+		{
+			// Go touch grass
+			Engine::ChangeScene(&dungeonScene);
+
 		}
 		else
 		{
@@ -99,12 +122,40 @@ void DungeonScene::Update(const double& dt)
 			// Update entities
 			player->update(dt);
 
+			if (boss->is_fordeletion())
+			{
+				bossDead = true;
+
+
+				// Increment dungeon level
+
+
+				// Save game
+
+
+			}
+
 			if (player->is_fordeletion())
 			{
-				Engine::ChangeScene(&menuScene);
+				Engine::ChangeScene(&dScene);
+
+
+				// Increment dungeon level
+
+
+				// Save game
+
+
 			}
 			else
 			{
+
+				if (bossDead && !doorOpened)
+				{
+					door->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect(Vector2(128, 64), Vector2(64, 64)));
+					doorOpened = true;
+				}
+
 				Scene::Update(dt);
 
 				// Set visibility status for near entities
@@ -122,13 +173,6 @@ void DungeonScene::Update(const double& dt)
 						// Set not visible
 						e->setVisible(false);
 					}
-				}
-
-				auto phealth = player->get_components<HealthComponent>()[0];
-
-				for (auto e : enemies)
-				{
-					phealth->IsHit(player, e);
 				}
 
 				// Reset view on player position
@@ -154,7 +198,11 @@ void DungeonScene::Load()
 	hpBars.clear();
 
 	// Current dungeon level
-	level = 4;
+	level = 10;
+
+	// Bools
+	bossDead = false;
+	doorOpened = false;
 
 	// Generate layout
 	auto t = ls::generateDungeon(level);
@@ -179,15 +227,7 @@ void DungeonScene::Load()
 	s->getSprite().setScale({ 2, 2 });
 
 	// Give the player some health
-	player->addComponent<HealthComponent>(100);
-
-
-
-
-	//auto p_d = player->addComponent<DeathComponent>();
-	//p_d->setType(true);
-
-
+	player->addComponent<HealthComponent>(200);
 
 	// Set standard physics body
 	b2PolygonShape Shape;
@@ -339,6 +379,11 @@ void DungeonScene::generateDungeonEntities(vector<int> t)
 					{
 						tile->addTag("pillar");
 					}
+
+					if (t[i * 135 + j] == 13)
+					{
+						door = tile;
+					}
 				}
 				// If it is but a floor
 				else
@@ -388,8 +433,6 @@ void DungeonScene::generateEnemies()
 				auto enemy = makeEntity();
 				enemy->addTag("enemy");
 
-				enemy->addComponent<HealthComponent>(100);
-
 				// Place it on the floor tile
 				enemy->setPosition({ floors[i].x , floors[i].y + 64 });
 
@@ -415,34 +458,24 @@ void DungeonScene::generateEnemies()
 						// Set correct texture
 						s->setTexure(skellington);
 
+						enemy->addComponent<HealthComponent>(75);
+
+						enemy->addComponent<EnemyHitComponent>(player.get(), 5);
+
 						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 175.0f);
 
 						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
+						sm->addState("hit", make_shared<HitState>(enemy, player));
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
-						sm->addState("flee", make_shared<FleeState>(enemy, player));
-
-
-
-
-						auto eh = enemy->addComponent<DeathComponent>();
-						eh->setTarget(player);
-
-						
-
-						// enemy add component player hit (component needs distance to player float
-
-						// distance between player and enemy needs two entities passed in, enemy and player
-
-						// for the update cycle, check if distance is less than 0, if so kill
 
 						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
-							50.0f,
-							make_shared<FleeDecision>(),
+							64.0f,
+							make_shared<HitDecision>(),
 							make_shared<DistanceDecision>(
 								player,
 								1000.0f,
@@ -461,20 +494,24 @@ void DungeonScene::generateEnemies()
 						// Set correct texture
 						s->setTexure(skellWarrior);
 
+						enemy->addComponent<HealthComponent>(150);
+
+						enemy->addComponent<EnemyHitComponent>(player.get(), 15);
+
 						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 150.0f);
 
 						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
+						sm->addState("hit", make_shared<HitState>(enemy, player));
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
-						sm->addState("flee", make_shared<FleeState>(enemy, player));
 
 						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
-							50.0f,
-							make_shared<FleeDecision>(),
+							72.0f,
+							make_shared<HitDecision>(),
 							make_shared<DistanceDecision>(
 								player,
 								1000.0f,
@@ -492,6 +529,8 @@ void DungeonScene::generateEnemies()
 					{
 						// Set correct texture
 						s->setTexure(skellRanger);
+
+						enemy->addComponent<HealthComponent>(120);
 
 						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 200.0f);
@@ -531,6 +570,8 @@ void DungeonScene::generateEnemies()
 					{
 						// Set correct texture
 						s->setTexure(skellWizard);
+
+						enemy->addComponent<HealthComponent>(90);
 
 						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 125.0f);
@@ -582,6 +623,10 @@ void DungeonScene::generateEnemies()
 
 	boss->addComponent<HealthComponent>(1000 + 500*(level-1));
 
+	boss->addComponent<EnemyHitComponent>(player.get(), 60);
+
+	boss->addComponent<EnemyFireComponent>(60.0f, 2);
+
 	// Give them a shape
 	b2PolygonShape Shape;
 	b2Vec2 vertices[4];
@@ -604,18 +649,25 @@ void DungeonScene::generateEnemies()
 	auto sm = boss->addComponent<StateMachineComponent>();
 	sm->addState("stationary", make_shared<StationaryState>());
 	sm->addState("seek", make_shared<SeekState>(boss, player));
-	sm->addState("flee", make_shared<FleeState>(boss, player));
+	sm->addState("hit", make_shared<HitState>(boss, player));
+	sm->addState("cast", make_shared<CastState>(boss, player));
 
 	// Decisions for the boss
 	auto decision = make_shared<DistanceDecision>(
 		player,
-		50.0f,
-		make_shared<FleeDecision>(),
+		144.0f,
+		make_shared<HitDecision>(),
 		make_shared<DistanceDecision>(
 			player,
-			1280.0f,
-			make_shared<SeekDecision>(),
-			make_shared<StationaryDecision>()));
+			720.0f,
+			make_shared<RandomDecision>(
+				make_shared<CastDecision>(),
+				make_shared<SeekDecision>()),
+			make_shared<DistanceDecision>(
+				player,
+				1280.0f,
+				make_shared<SeekDecision>(),
+				make_shared<StationaryDecision>())));
 
 	// The boss is the one to make the decisions
 	boss->addComponent<DecisionTreeComponent>(decision);
@@ -636,6 +688,7 @@ void DungeonScene::UnLoad()
 	player.reset();
 	ui.reset();
 	boss.reset();
+	door.reset();
 
 	// Unload EVERYTHING
 	Scene::UnLoad();

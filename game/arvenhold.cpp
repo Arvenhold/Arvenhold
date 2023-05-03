@@ -1,8 +1,6 @@
 #include "arvenhold.h"
 #include "engine.h"
 #include "filehandling.h"
-//#include <SFML/Audio/SoundBuffer.hpp>
-
 
 using namespace std;
 using namespace sf;
@@ -12,6 +10,7 @@ DungeonScene dungeonScene;
 MenuScene menuScene;
 OverGroundScene ogScene;
 SettingsScene sScene;
+DeathScene dScene;
 
 // Sindow size
 int gameWidth;
@@ -47,5 +46,4 @@ int main() {
 	Engine::Start(gameWidth, gameHeight, "Arvenhold", &menuScene);
 
 	FileHandler::save(gameHeight, gameWidth);
-
 }
