@@ -73,7 +73,7 @@ void FileHandler::load(int &gameHeight, int &gameWidth, int &save) {
 
 	fstream file("res/saves/save_1.txt");
 	if (!file.is_open()) {
-		file << "1920,1080,1,22,0,18,3,200,203" << endl;
+		file << "1920,1080,1,22,0,18,3,200,201" << endl;
 		controls[0] = 22;
 		controls[1] = 0;
 		controls[2] = 18;
