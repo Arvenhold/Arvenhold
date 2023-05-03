@@ -16,6 +16,7 @@ add_subdirectory("lib/sfml")
 set(SFML_INCS "lib/sfml/include")
 link_directories("${CMAKE_BINARY_DIR}/lib/sfml/lib")
 
+#### Copy dlls ####
 add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND} 
   -E copy_directory
     "${PROJECT_SOURCE_DIR}/res"
@@ -52,10 +53,18 @@ target_link_libraries(lib_ecm PRIVATE lib_maths)
 
 ## DLLs
 function (copy_sfml_dll MyTarget )
-add_custom_command(TARGET ${MyTarget} POST_BUILD        # Adds a post-build event to MyTest
-    COMMAND ${CMAKE_COMMAND} -E copy_directory  # which executes "cmake - E copy_if_different..."
-        "${CMAKE_BINARY_DIR}/lib/sfml/bin/$<CONFIGURATION>"      # <--this is in-file
-        $<TARGET_FILE_DIR:${MyTarget}>)                 # <--this is out-file path
+add_custom_command(TARGET ${MyTarget} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_BINARY_DIR}/lib/sfml/bin/$<CONFIGURATION>"
+        $<TARGET_FILE_DIR:${MyTarget}>)
+endfunction()
+
+#### MORE DLLs ####
+function (copy_sfml_audio_dll MyTarget )
+add_custom_command(TARGET ${MyTarget} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/lib/sfml/extlibs/bin/x64"
+        $<TARGET_FILE_DIR:${MyTarget}>)
 endfunction()
 
 #### Arvenhold ####
@@ -68,6 +77,7 @@ source_group("resources" FILES ${RESOURCE_FILES})
 target_include_directories(ARVENHOLD SYSTEM PRIVATE ${SFML_INCS} ${B2D_INCS})
 target_link_libraries(ARVENHOLD lib_engine)
 copy_sfml_dll(ARVENHOLD)
+copy_sfml_audio_dll(ARVENHOLD)
 set(EXECUTABLES ${EXECUTABLES} ARVENHOLD)
 add_dependencies (ARVENHOLD copy_resources)
 set_target_properties(ARVENHOLD 

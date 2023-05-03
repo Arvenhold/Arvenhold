@@ -2,6 +2,8 @@
 #include <system_resources.h>
 #include "cmp_explosion.h"
 #include "cmp_health.h"
+#include "../arvenhold.h"
+
 using namespace std;
 using namespace sf;
 
@@ -105,11 +107,19 @@ EnemyAttackComponent::EnemyAttackComponent(Entity* p, Vector2f direction, float 
     {
         s->setTexure(Resources::get<Texture>("death_ball.png"));
         pc->impulse(direction * 40.0f);
+        /*if (eCast->getStatus() != 2)
+        {
+            eCast->play();
+        }*/
     }
     else if (type == 1)
     {
         s->setTexure(Resources::get<Texture>("arrow.png"));
         pc->impulse(direction * 50.0f);
+        /*if (eShoot->getStatus() != 2)
+        {
+            eShoot->play();
+        }*/
     }
     pc->getFixture()->SetSensor(true);
 }
@@ -118,24 +128,6 @@ EnemyAttackComponent::EnemyAttackComponent(Entity* p, Vector2f direction, float 
 void EnemyFireComponent::update(double dt)
 {
     _cooldown -= dt;
-
-
-    /*if (_cooldown <= 0.f && _cast)
-    {
-        _sprite->setColor(Color(255, 255, 255));
-        _cast = false;
-    }*/
-
-
-
-    // Cast fireball
-    //if (_cooldown <= 0.f /*&& _ready*/)
-    //{
-    //    //fire();                                     // Cast the spell
-    //    _cooldown = 1.f;                            // Set cooldown
-    //    //_sprite->setColor(Color(150, 150, 150));     // Darken UI
-    //    //_cast = true;                              // Set casted
-    //}
 }
 
 void EnemyFireComponent::fire()
@@ -162,41 +154,6 @@ void EnemyFireComponent::fire()
         fireball->setPosition(_parent->getPosition() + 20.0f * direction);
         fireball->addComponent<EnemyAttackComponent>(direction, _damage, _type, 4.0f);
     }
-
-
-    // Which direction to cast?
-    /*auto xDir = 1.0f;
-    auto yDir = 1.0f;*/
-
-    // Check for mouse or controller
-    /*
-    if (true)
-    {
-        // Set direction to towards mouse
-        xDir = 1.0f * Mouse::getPosition(Engine::GetWindow()).x - Engine::getWindowSize().x * 0.5f;
-        yDir = 1.0f * Mouse::getPosition(Engine::GetWindow()).y - Engine::getWindowSize().y * 0.5f;
-    }
-    else
-    {
-        // Set direction to towards player movement
-        xDir = Joystick::getAxisPosition(0, Joystick::X);
-        yDir = Joystick::getAxisPosition(0, Joystick::Y);
-    }
-    */
-
-    /*auto p_list = _parent->scene->ents.find("player");
-    auto player = p_list[0];
-
-    xDir = 1.0f * player->getPosition().x;
-    yDir = 1.0f * player->getPosition().y;*/
-
-    // Normalise direction vector
-    /*auto direction = normalize(Vector2f(xDir, yDir));*/
-
-    // Cast the fireball
-    /*auto fireball = _parent->scene->makeEntity();
-    fireball->setPosition(_parent->getPosition() + 20.0f * direction);
-    fireball->addComponent<EnemyAttackComponent>(direction, 4.0f);*/
 }
 
 

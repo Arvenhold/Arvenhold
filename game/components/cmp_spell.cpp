@@ -28,6 +28,7 @@ void SpellComponent::update(double dt)
     {
         _fireS->setColor(Color(255, 255, 255));
         _fCast = false;
+        //pCast->play();
     }
 
     // If lightning strike can be cast, reset UI for it
@@ -35,6 +36,7 @@ void SpellComponent::update(double dt)
     {
         _lightS->setColor(Color(255, 255, 255));
         _lCast = false;
+        //pCast->play();
     }
 
     // If frost orb can be cast, reset UI for it
@@ -42,6 +44,7 @@ void SpellComponent::update(double dt)
     {
         _frostS->setColor(Color(255, 255, 255));
         _cCast = false;
+        //pCast->play();
     }
 
     // Cast fireball
