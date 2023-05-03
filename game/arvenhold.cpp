@@ -42,10 +42,10 @@ int main() {
 	eCast.setBuffer(*Resources::load<SoundBuffer>(""));
 	eDeath.setBuffer(*Resources::load<SoundBuffer>(""));*/
 
-	FileHandler::load(gameHeight, gameWidth);
+	FileHandler::load(gameHeight, gameWidth, saved_level);
 
 	Engine::Start(gameWidth, gameHeight, "Arvenhold", &menuScene);
 
-	FileHandler::save(gameHeight, gameWidth);
+	FileHandler::save(gameHeight, gameWidth, saved_level);
 
 }

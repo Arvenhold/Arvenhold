@@ -34,3 +34,4 @@ extern int gameHeight;
 
 extern int controls[6];
 
+extern int saved_level;
