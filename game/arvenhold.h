@@ -35,3 +35,4 @@ extern int gameHeight;
 
 extern int controls[6];
 
+extern int level;

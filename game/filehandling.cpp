@@ -10,10 +10,12 @@
 using namespace std;
 using namespace sf;
 
-string settings[8]; 
+string settings[9]; 
 int controls[6]; //w,a,s,d,shoot,potion
 
-void FileHandler::save(int gameHeight, int gameWidth) {
+int saved_level;
+
+void FileHandler::save(int gameHeight, int gameWidth, int save) {
 
 
 
@@ -47,7 +49,8 @@ void FileHandler::save(int gameHeight, int gameWidth) {
 
 		settings[0] = to_string(gameWidth);
 		settings[1] = to_string(gameHeight);
-		int i = 2;
+		settings[2] = to_string(save);
+		int i = 3;
 		for (int k : controls) {
 			//settings[i] = "0";
 			settings[i] = to_string(k);
@@ -63,14 +66,14 @@ void FileHandler::save(int gameHeight, int gameWidth) {
 
 }
 
-void FileHandler::load(int &gameHeight, int &gameWidth) {
+void FileHandler::load(int &gameHeight, int &gameWidth, int &save) {
 
 	gameHeight = 1080;
 	gameWidth = 1920;
 
 	fstream file("res/saves/save_1.txt");
 	if (!file.is_open()) {
-		file << "1920,1080,22,0,18,3,200,203" << endl;
+		file << "1920,1080,1,22,0,18,3,200,203" << endl;
 		controls[0] = 22;
 		controls[1] = 0;
 		controls[2] = 18;
@@ -79,6 +82,7 @@ void FileHandler::load(int &gameHeight, int &gameWidth) {
 		controls[5] = 203;
 		gameHeight = 1080;
 		gameWidth = 1920;
+		saved_level = 1;
 
 
 		cout << " Failed to open" << endl;
@@ -105,8 +109,10 @@ void FileHandler::load(int &gameHeight, int &gameWidth) {
 				gameWidth = stoi(toks[i]);
 			else if (i == 1)
 				gameHeight = stoi(toks[i]);
+			else if (i == 2)
+				save = stoi(toks[i]);
 			else
-				controls[i-2] = stoi(toks[i]);
+				controls[i-3] = stoi(toks[i]);
 
 			i++;
 

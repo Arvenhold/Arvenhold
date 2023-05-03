@@ -51,9 +51,11 @@ int main() {
 	//eCast->setBuffer(*Resources::load<SoundBuffer>("Enemy_cast.wav"));
 	//eDeath->setBuffer(*Resources::load<SoundBuffer>("Enemy_death.wav"));
 
-	FileHandler::load(gameHeight, gameWidth);
+	FileHandler::load(gameHeight, gameWidth, level);
 
 	Engine::Start(gameWidth, gameHeight, "Arvenhold", &menuScene);
 
-	FileHandler::save(gameHeight, gameWidth);
+
+	FileHandler::save(gameHeight, gameWidth, level);
+
 }

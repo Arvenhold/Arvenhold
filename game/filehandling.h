@@ -5,8 +5,8 @@ using namespace std;
 
 class FileHandler {
 public:
-	static void save(int gameWidth, int gameHeight);
-	static void load(int &gameWidth, int &gameHeight);
+	static void save(int gameWidth, int gameHeight, int save);
+	static void load(int &gameWidth, int &gameHeight, int &save);
 	static string ItoS(int k);
 	static int StoI(string c);
 };
