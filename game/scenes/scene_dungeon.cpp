@@ -666,6 +666,9 @@ void DungeonScene::generateEnemies()
 
 	// The boss is the one to make the decisions
 	boss->addComponent<DecisionTreeComponent>(decision);
+
+	// Add the enemy to the list
+	enemies.push_back(boss);
 }
 
 /// <summary>
