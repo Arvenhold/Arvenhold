@@ -58,15 +58,13 @@ void DungeonScene::Update(const double& dt)
 	}
 	else if (player->is_fordeletion())
 	{
-		Engine::ChangeScene(&dScene);
-
-
-		// Increment dungeon level
+		// decrement dungeon level
 
 
 		// Save game
 
 
+		Engine::ChangeScene(&dScene);
 	}
 	else
 	{
@@ -78,11 +76,10 @@ void DungeonScene::Update(const double& dt)
 			// Go touch grass
 			Engine::ChangeScene(&ogScene);
 		}
-		else if (pPos.x < bossPos.x + 48 && pPos.x > bossPos.x - 48 && pPos.y > bossPos.y - 1320 && pPos.y < startPos.y - 1280)
+		else if (pPos.x < bossPos.x + 48 && pPos.x > bossPos.x - 48 && pPos.y > bossPos.y - 1300 && pPos.y < bossPos.y - 1250 && bossDead && doorOpened)
 		{
-			// Go touch grass
+			// Go to next level
 			Engine::ChangeScene(&dungeonScene);
-
 		}
 		else
 		{
@@ -137,15 +134,13 @@ void DungeonScene::Update(const double& dt)
 
 			if (player->is_fordeletion())
 			{
-				Engine::ChangeScene(&dScene);
-
-
-				// Increment dungeon level
+				// decrement dungeon level
 
 
 				// Save game
 
 
+				Engine::ChangeScene(&dScene);
 			}
 			else
 			{
@@ -198,7 +193,7 @@ void DungeonScene::Load()
 	hpBars.clear();
 
 	// Current dungeon level
-	level = 10;
+	level = 1;
 
 	// Bools
 	bossDead = false;

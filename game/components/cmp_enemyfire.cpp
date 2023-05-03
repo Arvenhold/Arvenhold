@@ -148,10 +148,10 @@ void EnemyFireComponent::fire()
         {
             _cooldown = 4.f;
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 12; i++)
             {
                 // Have the children each go off in their own directions in life
-                auto direction = rotate(normalize(Vector2f(1, 0)), _parent->getRotation() + i * 45.f);
+                auto direction = rotate(normalize(Vector2f(1, 0)), _parent->getRotation() + i * 30.f);
                 // Cast the fireball
                 auto fireball = _parent->scene->makeEntity();
                 fireball->setPosition(_parent->getPosition() + 20.0f * direction);

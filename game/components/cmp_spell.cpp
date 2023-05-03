@@ -51,7 +51,7 @@ void SpellComponent::update(double dt)
 
     if (controls[4] >= 200)
     {
-        if (_firetime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 2)))
+        if (_firetime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 4)))
         {
             fire();                                     // Cast the spell
             _firetime = 1.f;                            // Set cooldown
@@ -60,7 +60,7 @@ void SpellComponent::update(double dt)
         }
 
         // Cast lightning strike
-        if (_lighttime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 3)))
+        if (_lighttime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 5)))
         {
             lightning();                                // Cast the spell
             _lighttime = 1.5f;                          // Set cooldown
@@ -69,7 +69,7 @@ void SpellComponent::update(double dt)
         }
 
         // Cast frost orb
-        if (_coldtime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4]-200)) || Joystick::isButtonPressed(0, 1)))
+        if (_coldtime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4]-200)) || Joystick::getAxisPosition(0, Joystick::Z) > 0))
         {
             cold();                                     // Cast the spell
             _coldtime = 3.f;                            // Set cooldown
@@ -79,7 +79,7 @@ void SpellComponent::update(double dt)
     }
     else if (controls[4] < 200)
     {
-        if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 2)))
+        if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 4)))
         {
             fire();                                     // Cast the spell
             _firetime = 1.f;                            // Set cooldown
@@ -88,7 +88,7 @@ void SpellComponent::update(double dt)
         }
 
         // Cast lightning strike
-        if (_lighttime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 3)))
+        if (_lighttime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 5)))
         {
             lightning();                                // Cast the spell
             _lighttime = 1.5f;                          // Set cooldown
@@ -97,7 +97,7 @@ void SpellComponent::update(double dt)
         }
 
         // Cast frost orb
-        if (_coldtime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 1)))
+        if (_coldtime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::getAxisPosition(0, Joystick::Z) > 0))
         {
             cold();                                     // Cast the spell
             _coldtime = 3.f;                            // Set cooldown

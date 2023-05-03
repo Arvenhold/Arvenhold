@@ -15,6 +15,12 @@ View viewD;
 void DeathScene::Update(const double& dt)
 {
 
+	// If pressed "A" load save game
+	if (Joystick::isButtonPressed(0, 0))
+	{
+		Engine::ChangeScene(&dungeonScene);
+	}
+
 	// Mouse is not clicked
 	static bool mouse_down = false;
 
@@ -30,8 +36,8 @@ void DeathScene::Update(const double& dt)
 
 		mouse_down = true;
 
-		// If clicked on "Continue" or presses "A" load save game
-		if ((mouse_pos.x >= 814 * sDRatio && mouse_pos.x <= 1104 * sDRatio && mouse_pos.y >= 680 * sDRatio && mouse_pos.y <= 760 * sDRatio) || Joystick::isButtonPressed(0, 0))
+		// If clicked on "Continue" load save game
+		if ((mouse_pos.x >= 814 * sDRatio && mouse_pos.x <= 1104 * sDRatio && mouse_pos.y >= 680 * sDRatio && mouse_pos.y <= 760 * sDRatio))
 		{
 			Engine::ChangeScene(&dungeonScene);
 		}

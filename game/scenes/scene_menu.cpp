@@ -22,6 +22,38 @@ float sRatio;
 /// <param name="dt"></param>
 void MenuScene::Update(const double& dt) 
 {
+
+	// If clicked on "New Game" start new game
+	if (Joystick::isButtonPressed(0, 0))
+	{
+
+		// Level = 1
+
+		// Save
+
+
+		Engine::ChangeScene(&ogScene);
+	}
+	// If clicked on "Continue" load save game
+	if (Joystick::isButtonPressed(0, 2))
+	{
+		Engine::ChangeScene(&dungeonScene);
+	}
+	// If clicked on "Settings" go to settings
+	if (Joystick::isButtonPressed(0, 3))
+	{
+		Engine::ChangeScene(&sScene);
+	}
+	// If clicked on "Exit" exit game
+	if (Joystick::isButtonPressed(0, 2))
+	{
+		Engine::GetWindow().close();
+	}
+
+
+
+
+
 	// Mouse is not clicked
 	static bool mouse_down = false;
 
@@ -33,8 +65,6 @@ void MenuScene::Update(const double& dt)
 		// Get position of mouse
 		auto mouse_pos = Mouse::getPosition(Engine::GetWindow());
 
-		cout << mouse_pos.x << "," << mouse_pos.y << endl;
-
 		mouse_down = true;
 		
 		// If mouse is within the column of buttons
@@ -43,12 +73,17 @@ void MenuScene::Update(const double& dt)
 			// If clicked on "New Game" start new game
 			if (mouse_pos.y >= 560 * sRatio && mouse_pos.y <= 640 * sRatio)
 			{
+
+				// Level = 1
+
+				// Save
+
 				Engine::ChangeScene(&ogScene);
 			}
 			// If clicked on "Continue" load save game
 			if (mouse_pos.y >= 680 * sRatio && mouse_pos.y <= 760 * sRatio)
 			{
-
+				Engine::ChangeScene(&dungeonScene);
 			}
 			// If clicked on "Settings" go to settings
 			if (mouse_pos.y >= 800 * sRatio && mouse_pos.y <= 880 * sRatio)
