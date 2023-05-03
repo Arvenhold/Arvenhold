@@ -76,7 +76,7 @@ void SpellComponent::update(double dt)
             _frostS->setColor(Color(150, 150, 150));                    // Darken UI
             _cCast = true;                                              // Set casted
             auto hitSound = _parent->scene->ents.find("sound")[0];      // Get sound
-            hitSound->get_components<SoundComponent>()[1]->play();      // Play sound
+            hitSound->get_components<SoundComponent>()[8]->play();      // Play sound
         }
     }
     else if (controls[4] < 200)
@@ -108,7 +108,7 @@ void SpellComponent::update(double dt)
             _frostS->setColor(Color(150, 150, 150));                    // Darken UI
             _cCast = true;                                              // Set casted
             auto hitSound = _parent->scene->ents.find("sound")[0];      // Get sound
-            hitSound->get_components<SoundComponent>()[1]->play();      // Play sound
+            hitSound->get_components<SoundComponent>()[8]->play();      // Play sound
         }
     }
 }

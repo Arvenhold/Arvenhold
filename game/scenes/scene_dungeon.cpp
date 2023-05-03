@@ -337,7 +337,9 @@ void DungeonScene::Load()
 		Sounds->addComponent<SoundComponent>("Enemy_cast.wav");
 		Sounds->addComponent<SoundComponent>("Enemy_death.wav");
 		Sounds->addComponent<SoundComponent>("Projectile_Explosion.wav");
-		//Sounds->addComponent<SoundComponent>("Player_cast.wav");
+		Sounds->addComponent<SoundComponent>("arrow.wav");
+		Sounds->addComponent<SoundComponent>("heal.wav");
+		Sounds->addComponent<SoundComponent>("blizzard.wav");
 	}
 	Sounds->addTag("sound");
 

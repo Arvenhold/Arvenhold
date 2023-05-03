@@ -1,6 +1,7 @@
 #include "cmp_potion.h"
 #include "cmp_health.h"
 #include "../arvenhold.h"
+#include "cmp_sound.h"
 
 using namespace sf;
 using namespace std;
@@ -16,8 +17,6 @@ void PotionComponent::update(double dt) {
 		if ((Mouse::isButtonPressed(Mouse::Button(controls[5]-200)) || Joystick::isButtonPressed(0, 2)) && _cooldown <= 0 && _PotionCount > 0) {
 			auto phealth = _parent->get_components<HealthComponent>()[0];
 
-			cout << "HEAL!!!" << endl;
-
 			phealth->heal(phealth->getMaxHealth() / 3);
 
 			_cooldown = 2.0f;
@@ -25,6 +24,8 @@ void PotionComponent::update(double dt) {
 			_potionT->setString(to_string(_PotionCount));
 			_potionS->setColor(Color(150, 150, 150));                     // Darken UI
 			_used = true;
+			auto hitSound = _parent->scene->ents.find("sound")[0];
+			hitSound->get_components<SoundComponent>()[7]->play();
 		}
 
 	}
@@ -32,8 +33,6 @@ void PotionComponent::update(double dt) {
 		if ((Keyboard::isKeyPressed(Keyboard::Key(controls[5])) || Joystick::isButtonPressed(0, 2)) && _cooldown <= 0 && _PotionCount > 0) {
 			auto phealth = _parent->get_components<HealthComponent>()[0];
 
-			cout << "HEAL!!!" << endl;
-
 			phealth->heal(phealth->getMaxHealth() / 3);
 
 			_cooldown = 2.0f;
@@ -41,6 +40,8 @@ void PotionComponent::update(double dt) {
 			_potionT->setString(to_string(_PotionCount));
 			_potionS->setColor(Color(150, 150, 150));                     // Darken UI
 			_used = true;
+			auto hitSound = _parent->scene->ents.find("sound")[0];
+			hitSound->get_components<SoundComponent>()[7]->play();
 		}
 
 	}

@@ -104,7 +104,7 @@ EnemyAttackComponent::EnemyAttackComponent(Entity* p, Vector2f direction, float 
         s->setTexure(Resources::get<Texture>("arrow.png"));
         pc->impulse(direction * 50.0f);
         auto hitSound = _parent->scene->ents.find("sound")[0];
-        hitSound->get_components<SoundComponent>()[3]->play();
+        hitSound->get_components<SoundComponent>()[6]->play();
     }
     pc->getFixture()->SetSensor(true);
 }
