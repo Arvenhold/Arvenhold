@@ -15,6 +15,8 @@ protected:
 
 	float _ttime;
 
+	float _scale;
+
 public:
 	void update(double dt) override;
 	void render() override {};

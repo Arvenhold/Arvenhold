@@ -6,13 +6,14 @@
 #include <sfml/graphics.hpp>
 #include "scenes/scene_settings.h"
 #include <system_resources.h>
-//#include <SFML/Audio/Sound.hpp>
+#include "scenes/scene_death.h"
 
 // Scenes
 extern DungeonScene dungeonScene;
 extern MenuScene menuScene;
 extern OverGroundScene ogScene;
 extern SettingsScene sScene;
+extern DeathScene dScene;
 
 // Player sfx
 extern std::shared_ptr<sf::Sound> pHit;

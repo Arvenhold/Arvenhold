@@ -3,6 +3,8 @@
 #include "cmp_explosion.h"
 #include "cmp_health.h"
 #include "../arvenhold.h"
+#include "cmp_player_physics.h"
+#include "cmp_sound.h"
 
 using namespace std;
 using namespace sf;
@@ -52,19 +54,6 @@ void EnemyAttackComponent::update(double dt) {
                 }
             }
         }
-
-        // If it has hit, make it go boom
-        //if (_hit)
-        //{
-        //    // Create an explosion
-        //    auto explosion = _parent->scene->makeEntity();
-
-        //    // Just infront of where the fireball was
-        //    auto offset = _parent->get_components<PhysicsComponent>()[0]->getVelocity();
-        //    offset.y = -1.0f * offset.y;
-        //    explosion->setPosition(_parent->getPosition() + normalize(offset) * 60.0f);
-        //    explosion->addComponent<ExplodeComponent>(true);
-        //}
     }
 }
 
@@ -83,7 +72,7 @@ EnemyAttackComponent::EnemyAttackComponent(Entity* p, Vector2f direction, float 
     // Give the fireball a new look
     auto s = p->addComponent<SpriteComponent>();
 
-    if (type == 0)
+    if (type == 0 || type == 2)
     {
         s->setTexure(Resources::get<Texture>("death_ball.png"));
     }
@@ -103,23 +92,19 @@ EnemyAttackComponent::EnemyAttackComponent(Entity* p, Vector2f direction, float 
     Shape.SetAsBox(0.0f, 0.0f);
     auto pc = p->addComponent<PhysicsComponent>(true, Shape);
     pc->setFriction(1.0f);
-    if (type == 0)
+    if (type == 0 || type == 2)
     {
         s->setTexure(Resources::get<Texture>("death_ball.png"));
-        pc->impulse(direction * 40.0f);
-        /*if (eCast->getStatus() != 2)
-        {
-            eCast->play();
-        }*/
+        pc->impulse(direction * 30.0f);
+        auto hitSound = _parent->scene->ents.find("sound")[0];
+        hitSound->get_components<SoundComponent>()[3]->play();
     }
     else if (type == 1)
     {
         s->setTexure(Resources::get<Texture>("arrow.png"));
         pc->impulse(direction * 50.0f);
-        /*if (eShoot->getStatus() != 2)
-        {
-            eShoot->play();
-        }*/
+        auto hitSound = _parent->scene->ents.find("sound")[0];
+        hitSound->get_components<SoundComponent>()[3]->play();
     }
     pc->getFixture()->SetSensor(true);
 }
@@ -132,30 +117,57 @@ void EnemyFireComponent::update(double dt)
 
 void EnemyFireComponent::fire()
 {
-    if (_cooldown <= 0.f /*&& _ready*/)
+    if (_cooldown <= 0.f)
     {
-        _cooldown = 1.f;
+        if (_type < 2)
+        {
+            _cooldown = 1.f;
 
-        // Which direction to cast?
-        auto xDir = 1.0f;
-        auto yDir = 1.0f;
+            // Which direction to cast?
+            auto xDir = 1.0f;
+            auto yDir = 1.0f;
 
-        auto p_list = _parent->scene->ents.find("player");
-        auto player = p_list[0];
+            auto p_list = _parent->scene->ents.find("player");
+            auto player = p_list[0];
 
-        xDir = player->getPosition().x - _parent->getPosition().x;
-        yDir = player->getPosition().y - _parent->getPosition().y;
+            xDir = (player->getPosition().x - _parent->getPosition().x) + 25 * normalize(player->get_components<PlayerPhysicsComponent>()[0]->getVelocity()).x;
+            yDir = (player->getPosition().y - _parent->getPosition().y) - 25 * normalize(player->get_components<PlayerPhysicsComponent>()[0]->getVelocity()).y;
 
-        // Normalise direction vector
-        auto direction = normalize(Vector2f(xDir, yDir));
+            // Normalise direction vector
+            auto direction = normalize(Vector2f(xDir, yDir));
 
-        // Cast the fireball
-        auto fireball = _parent->scene->makeEntity();
-        fireball->setPosition(_parent->getPosition() + 20.0f * direction);
-        fireball->addComponent<EnemyAttackComponent>(direction, _damage, _type, 4.0f);
+            // Cast the fireball
+            auto fireball = _parent->scene->makeEntity();
+            fireball->setPosition(_parent->getPosition() + 20.0f * direction);
+            fireball->addComponent<EnemyAttackComponent>(direction, _damage, _type, 4.0f);
+
+        }
+        else
+        {
+            _cooldown = 4.f;
+
+            for (int i = 0; i < 12; i++)
+            {
+                // Have the children each go off in their own directions in life
+                auto direction = rotate(normalize(Vector2f(1, 0)), _parent->getRotation() + i * 30.f);
+                // Cast the fireball
+                auto fireball = _parent->scene->makeEntity();
+                fireball->setPosition(_parent->getPosition() + 20.0f * direction);
+                fireball->addComponent<EnemyAttackComponent>(direction, _damage, _type, 4.0f);
+            }
+        }
     }
 }
 
 
 EnemyFireComponent::EnemyFireComponent(Entity* p, float damage, int type)
     : Component(p), _cooldown(1.f), _damage(damage), _type(type) {}
+
+void EnemyHitComponent::hit()
+{
+    // Hit player
+    _player->get_components<HealthComponent>()[0]->takeDamage(_damage);
+}
+
+EnemyHitComponent::EnemyHitComponent(Entity* p, Entity* player, int damage) : Component(p), _player(player), _damage(damage)
+{}

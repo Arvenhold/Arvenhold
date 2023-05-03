@@ -54,6 +54,8 @@ void SettingsScene::Update(const double& dt)
 	// Mouse is not clicked
 	static bool mouse_down = false;
 
+	sSRatio = (1.0f * Engine::getWindowSize().y) / 1080.0f;
+
 	if (Mouse::isButtonPressed(Mouse::Left) && !mouse_down)
 	{
 		// Get position of mouse
@@ -87,7 +89,7 @@ void SettingsScene::Update(const double& dt)
 					sSRatio = (1.0f * gameHeight) / 1080.0f;
 				}
 				// If clicked on "1080p" load save game
-				if (mouse_pos.x >= 864 * sSRatio && mouse_pos.x <= 1056 * sSRatio)
+				else if (mouse_pos.x >= 864 * sSRatio && mouse_pos.x <= 1056 * sSRatio)
 				{
 					// Change resolution to 1920 x 1080
 					gameHeight = 1080;
@@ -97,7 +99,7 @@ void SettingsScene::Update(const double& dt)
 
 				}
 				// If clicked on "1440p" go to settings
-				if (mouse_pos.x >= 1084 * sSRatio && mouse_pos.x <= 1276 * sSRatio)
+				else if (mouse_pos.x >= 1084 * sSRatio && mouse_pos.x <= 1276 * sSRatio)
 				{
 					// Change resolution to 2560 x 1440
 					gameHeight = 1440;
@@ -128,7 +130,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Down" load save game
-				if (mouse_pos.y >= 428 * sSRatio && mouse_pos.y <= 492 * sSRatio)
+				else if (mouse_pos.y >= 428 * sSRatio && mouse_pos.y <= 492 * sSRatio)
 				{
 					auto text = ents.find("text")[1]->get_components<TextComponent>()[0];
 
@@ -145,7 +147,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Left" go to settings
-				if (mouse_pos.y >= 508 * sSRatio && mouse_pos.y <= 572 * sSRatio)
+				else if (mouse_pos.y >= 508 * sSRatio && mouse_pos.y <= 572 * sSRatio)
 				{
 					auto text = ents.find("text")[2]->get_components<TextComponent>()[0];
 
@@ -162,7 +164,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Right" exit game
-				if (mouse_pos.y >= 588 * sSRatio && mouse_pos.y <= 652 * sSRatio)
+				else if (mouse_pos.y >= 588 * sSRatio && mouse_pos.y <= 652 * sSRatio)
 				{
 					auto text = ents.find("text")[3]->get_components<TextComponent>()[0];
 
@@ -179,7 +181,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Attack" go to settings
-				if (mouse_pos.y >= 668 * sSRatio && mouse_pos.y <= 732 * sSRatio)
+				else if (mouse_pos.y >= 668 * sSRatio && mouse_pos.y <= 732 * sSRatio)
 				{
 					auto text = ents.find("text")[4]->get_components<TextComponent>()[0];
 
@@ -196,7 +198,7 @@ void SettingsScene::Update(const double& dt)
 					text->getText()->setOrigin({ width, height });
 				}
 				// If clicked on "Potion" exit game
-				if (mouse_pos.y >= 748 * sSRatio && mouse_pos.y <= 812 * sSRatio)
+				else if (mouse_pos.y >= 748 * sSRatio && mouse_pos.y <= 812 * sSRatio)
 				{
 					auto text = ents.find("text")[5]->get_components<TextComponent>()[0];
 

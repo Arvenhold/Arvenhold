@@ -30,7 +30,14 @@ public:
 };
 
 // Melee
-
+class HitState : public State
+{
+private:
+    Hit _steering;
+public:
+    HitState(std::shared_ptr<Entity> owner, std::shared_ptr<Entity> player) : _steering(owner.get(), player.get()) {}
+    void execute(Entity*, double) noexcept override;
+};
 
 
 // Arrow

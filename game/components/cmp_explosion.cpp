@@ -1,6 +1,7 @@
 #include "cmp_explosion.h"
 #include <system_resources.h>
 #include "cmp_health.h"
+#include "cmp_sound.h"
 using namespace std;
 using namespace sf;
 
@@ -69,6 +70,9 @@ ExplodeComponent::ExplodeComponent(Entity* p, bool cast)
 
     // It's not got long
     _lifetime = 0.12f;
+
+    auto hitSound = _parent->scene->ents.find("sound")[0];
+    hitSound->get_components<SoundComponent>()[5]->play();
 
     // Make explosion look explodey
     auto s = p->addComponent<SpriteComponent>();

@@ -1,5 +1,7 @@
 #include "cmp_health.h"
 #include "cmp_sprite.h"
+#include "engine.h"
+#include "cmp_sound.h"
 
 using namespace sf;
 
@@ -25,25 +27,17 @@ void HealthComponent::update(double dt)
 	if (_currentHP <= 0)
 	{
 		_parent->setForDelete();
+		if (_parent->getTags().find("player") != _parent->getTags().end())
+		{
+			//auto hitSound = _parent->scene->ents.find("sound")[0];
+			//hitSound->get_components<SoundComponent>()[0]->play();
+		}
+		else
+		{
+			auto hitSound = _parent->scene->ents.find("sound")[0];
+			hitSound->get_components<SoundComponent>()[4]->play();
+		}
 	}
-}
-
-void HealthComponent::IsHit(std::shared_ptr<Entity> p, std::shared_ptr<Entity> e)
-{
-	auto x1 = p->getPosition().x;
-	auto y1 = p->getPosition().y;
-	auto x2 = e->getPosition().x;
-	auto y2 = e->getPosition().y;
-	if((sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2)) <= 100.0f) && e->isAlive()) {
-		//_hit = true;
-		takeDamage(5);
-		//_cooldown = 0.05;
-	}
-	else
-	{
-		//_hit = false;
-	}
-	
 }
 
 /// <summary>
@@ -59,6 +53,16 @@ void HealthComponent::takeDamage(int damage)
 		_currentHP -= damage;
 		_cooldown = 0.1f;
 		_hit = true;
+
+		if (_parent->getTags().find("player") != _parent->getTags().end())
+		{
+			auto hitSound = _parent->scene->ents.find("sound")[0];
+			hitSound->get_components<SoundComponent>()[0]->play();
+		}
+		else
+		{
+			
+		}
 
 		// Give a red look to signify damage taken
 		_parent->get_components<SpriteComponent>()[0]->getSprite().setColor(Color(255, 150, 150));
