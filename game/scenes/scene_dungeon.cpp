@@ -15,6 +15,7 @@
 #include "../components/cmp_health_bar.h"
 #include "../components/cmp_ui_element.h"
 #include "../components/cmp_health.h"
+#include "../components/cmp_enemyfire.h"
 
 using namespace std;
 using namespace sf;
@@ -46,7 +47,7 @@ int level;
 void DungeonScene::Update(const double& dt) 
 {
 	// If pressed tab go to main menu
-	if (Keyboard::isKeyPressed(Keyboard::Key(60))) 
+	if (Keyboard::isKeyPressed(Keyboard::Key(60)) || player->is_fordeletion())
 	{
 		Engine::ChangeScene(&menuScene);
 	}
@@ -94,30 +95,46 @@ void DungeonScene::Update(const double& dt)
 			// Make sure ui is alive
 			ui->setAlive(true);
 
+
 			// Update entities
 			player->update(dt);
-			Scene::Update(dt);
 
-			// Set visibility status for near entities
-			for (auto e : ents.list)
+			if (player->is_fordeletion())
 			{
-				// If not visible or deleting but nearby
-				if (!e->isVisible() && length(e->getPosition() - player->getPosition()) < 1280 && !e->is_fordeletion())
-				{
-					// Set visible
-					e->setVisible(true);
-				}
-				// If not nearby but visible
-				else if ((e->isVisible() && length(e->getPosition() - player->getPosition()) > 1280))
-				{
-					// Set not visible
-					e->setVisible(false);
-				}
+				Engine::ChangeScene(&menuScene);
 			}
+			else
+			{
+				Scene::Update(dt);
 
-			// Reset view on player position
-			view.setCenter(player.get()->getPosition());
-			Engine::GetWindow().setView(view);
+				// Set visibility status for near entities
+				for (auto e : ents.list)
+				{
+					// If not visible or deleting but nearby
+					if (!e->isVisible() && length(e->getPosition() - player->getPosition()) < 1280 && !e->is_fordeletion())
+					{
+						// Set visible
+						e->setVisible(true);
+					}
+					// If not nearby but visible
+					else if ((e->isVisible() && length(e->getPosition() - player->getPosition()) > 1280))
+					{
+						// Set not visible
+						e->setVisible(false);
+					}
+				}
+
+				auto phealth = player->get_components<HealthComponent>()[0];
+
+				for (auto e : enemies)
+				{
+					phealth->IsHit(player, e);
+				}
+
+				// Reset view on player position
+				view.setCenter(player.get()->getPosition());
+				Engine::GetWindow().setView(view);
+			}
 		}
 	}
 }
@@ -137,7 +154,7 @@ void DungeonScene::Load()
 	hpBars.clear();
 
 	// Current dungeon level
-	level = 1;
+	level = 4;
 
 	// Generate layout
 	auto t = ls::generateDungeon(level);
@@ -206,9 +223,11 @@ void DungeonScene::Load()
 		auto enemyUI = makeEntity();
 		enemyUI->addComponent<HealthBarComponent>(player.get(), e.get());
 		hpBars.push_back(enemyUI);
+
 	}
 
 	// Set view to player position
+
 	view.reset(FloatRect({ 0, 0 }, { 1920, 1080 }));
 	view.setCenter(player.get()->getPosition());
 
@@ -477,22 +496,29 @@ void DungeonScene::generateEnemies()
 						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 200.0f);
 
+						enemy->addComponent<EnemyFireComponent>(25.0f,1);
+
 						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
+						sm->addState("cast", make_shared<CastState>(enemy, player));
 
 						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
-							300.0f,
+							200.0f,
 							make_shared<FleeDecision>(),
 							make_shared<DistanceDecision>(
 								player,
-								1000.0f,
-								make_shared<SeekDecision>(),
-								make_shared<StationaryDecision>()));
+								700.0f,
+								make_shared<CastDecision>(),
+								make_shared<DistanceDecision>(
+									player,
+									1000.0f,
+									make_shared<SeekDecision>(),
+									make_shared<StationaryDecision>())));
 
 						// Give the enemy some decisions to make
 						enemy->addComponent<DecisionTreeComponent>(decision);
@@ -509,22 +535,29 @@ void DungeonScene::generateEnemies()
 						// Set physics component and speed 
 						enemy->addComponent<PhysicsComponent>(true, Shape, 125.0f);
 
+						enemy->addComponent<EnemyFireComponent>(40.0f,0);
+
 						// Give the enemy some states of being
 						auto sm = enemy->addComponent<StateMachineComponent>();
 						sm->addState("stationary", make_shared<StationaryState>());
 						sm->addState("seek", make_shared<SeekState>(enemy, player));
 						sm->addState("flee", make_shared<FleeState>(enemy, player));
+						sm->addState("cast", make_shared<CastState>(enemy, player));
 
 						// Decision tree for the enemy AI
 						auto decision = make_shared<DistanceDecision>(
 							player,
-							400.0f,
+							200.0f,
 							make_shared<FleeDecision>(),
 							make_shared<DistanceDecision>(
 								player,
-								1000.0f,
-								make_shared<SeekDecision>(),
-								make_shared<StationaryDecision>()));
+								600.0f,
+								make_shared<CastDecision>(),
+								make_shared<DistanceDecision>(
+									player,
+									1000.0f,
+									make_shared<SeekDecision>(),
+									make_shared<StationaryDecision>())));
 
 						// Give the enemy some decisions to make
 						enemy->addComponent<DecisionTreeComponent>(decision);
@@ -545,7 +578,9 @@ void DungeonScene::generateEnemies()
 	// Give them somewhere to stay
 	boss->setPosition(bossPos);
 
-	boss->addComponent<HealthComponent>(100*level);
+	boss->addTag("enemy");
+
+	boss->addComponent<HealthComponent>(1000 + 500*(level-1));
 
 	// Give them a shape
 	b2PolygonShape Shape;

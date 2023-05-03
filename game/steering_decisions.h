@@ -56,7 +56,14 @@ public:
 
 
 // Spell
-
+class CastDecision : public DecisionTreeNode
+{
+public:
+    void makeDecision(Entity* owner) final {
+        auto sm = owner->get_components<StateMachineComponent>();
+        sm[0]->changeState("cast");
+    }
+};
 
 // Boss 
 
