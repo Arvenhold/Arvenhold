@@ -16,6 +16,7 @@
 #include "../components/cmp_ui_element.h"
 #include "../components/cmp_health.h"
 #include "../components/cmp_enemyfire.h"
+#include "../components/cmp_potion.h"
 
 using namespace std;
 using namespace sf;
@@ -180,6 +181,7 @@ void DungeonScene::Load()
 
 	// Give the player some health
 	player->addComponent<HealthComponent>(100);
+	player->addComponent<PotionComponent>();
 
 
 

@@ -22,6 +22,30 @@ int GetButton() {
 		if (event.type == Event::KeyPressed && event.key.code <=38) {
 			return event.key.code;
 		}
+
+		if (event.type == Event::MouseButtonPressed)
+		{
+			if (event.mouseButton.button == sf::Mouse::Left)
+			{
+				return 200;
+			}
+			else if (event.mouseButton.button == sf::Mouse::Right)
+			{
+				return 201;
+			}
+			else if (event.mouseButton.button == sf::Mouse::Middle)
+			{
+				return 202;
+			}
+			else if (event.mouseButton.button == sf::Mouse::XButton1)
+			{
+				return 203;
+			}
+			else if (event.mouseButton.button == sf::Mouse::XButton2)
+			{
+				return 204;
+			}
+		}
 	}
 }
 
