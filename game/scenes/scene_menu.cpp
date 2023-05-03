@@ -6,6 +6,7 @@
 #include "../components/cmp_text.h"
 #include "../components/cmp_sprite.h"
 #include <system_resources.h>
+#include "../filehandling.h"
 using namespace std::filesystem;
 
 using namespace std;
@@ -75,13 +76,16 @@ void MenuScene::Update(const double& dt)
 			{
 
 				// Level = 1
+				level = 1;
 
-				// Save
+				// Save game
+				FileHandler::save(Engine::getWindowSize().y, Engine::getWindowSize().x, level);
 
+				// New game
 				Engine::ChangeScene(&ogScene);
 			}
 			// If clicked on "Continue" load save game
-			if (mouse_pos.y >= 680 * sRatio && mouse_pos.y <= 760 * sRatio)
+			if (mouse_pos.y >= 680 * sRatio && mouse_pos.y <= 760 * sRatio && level > 1)
 			{
 				Engine::ChangeScene(&dungeonScene);
 			}
@@ -163,7 +167,7 @@ void MenuScene::Load()
 		s->getSprite().setScale({ 1.2f,1 });
 
 		// For "Continue" button, if no save to load, make it darker
-		if (i == 1)
+		if (i == 1 && level == 1)
 		{
 			s->getSprite().setColor(Color(50, 50, 50));
 		}
@@ -195,11 +199,12 @@ void MenuScene::Load()
 		t->getText()->setOrigin({ width, height });
 
 		// If no save to load
-		if (true)
+		if (level == 1)
 		{
 			// Set button text darker
 			t->getText()->setFillColor(Color(130, 130, 0));
 		}
+
 		t->getText()->setPosition({ 960, 705 });
 	}
 

@@ -18,6 +18,7 @@
 #include "../components/cmp_enemyfire.h"
 #include "../components/cmp_potion.h"
 #include "../components/cmp_sound.h"
+#include "../filehandling.h"
 
 using namespace std;
 using namespace sf;
@@ -61,10 +62,13 @@ void DungeonScene::Update(const double& dt)
 	else if (player->is_fordeletion())
 	{
 		// decrement dungeon level
-
+		if (level > 1)
+		{
+			level--;
+		}
 
 		// Save game
-
+		FileHandler::save(Engine::getWindowSize().y, Engine::getWindowSize().x, level);
 
 		Engine::ChangeScene(&dScene);
 	}
@@ -75,10 +79,19 @@ void DungeonScene::Update(const double& dt)
 		// If player goes to dungeon entrance
 		if (pPos.x < startPos.x + 48 && pPos.x > startPos.x - 48 && pPos.y > startPos.y + 144 && pPos.y < startPos.y + 160)
 		{
+			// decrement dungeon level
+			if (level > 1)
+			{
+				level--;
+			}
+
+			// Save game
+			FileHandler::save(Engine::getWindowSize().y, Engine::getWindowSize().x, level);
+
 			// Go touch grass
 			Engine::ChangeScene(&ogScene);
 		}
-		else if (pPos.x < bossPos.x + 48 && pPos.x > bossPos.x - 48 && pPos.y > bossPos.y - 1300 && pPos.y < bossPos.y - 1250 && bossDead && doorOpened)
+		else if (pPos.x < bossPos.x + 48 && pPos.x > bossPos.x - 48 && pPos.y > bossPos.y - 1300 && pPos.y < bossPos.y - 1250 && bossDead && doorOpened && level < 10)
 		{
 			// Go to next level
 			Engine::ChangeScene(&dungeonScene);
@@ -127,27 +140,33 @@ void DungeonScene::Update(const double& dt)
 
 
 				// Increment dungeon level
-
+				if (level < 10)
+				{
+					level++;
+				}
 
 				// Save game
-
+				FileHandler::save(Engine::getWindowSize().y, Engine::getWindowSize().x, level);
 
 			}
 
 			if (player->is_fordeletion())
 			{
 				// decrement dungeon level
-
+				if (level > 1)
+				{
+					level--;
+				}
 
 				// Save game
-
+				FileHandler::save(Engine::getWindowSize().y, Engine::getWindowSize().x, level);
 
 				Engine::ChangeScene(&dScene);
 			}
 			else
 			{
 
-				if (bossDead && !doorOpened)
+				if (bossDead && !doorOpened && level < 10)
 				{
 					door->get_components<SpriteComponent>()[0]->getSprite().setTextureRect(sf::IntRect(Vector2(128, 64), Vector2(64, 64)));
 					doorOpened = true;
@@ -193,10 +212,6 @@ void DungeonScene::Load()
 	floors.clear();
 	enemies.clear();
 	hpBars.clear();
-
-
-	// Current dungeon level
-	level = 1;
 
 	// Bools
 	bossDead = false;
@@ -312,7 +327,7 @@ void DungeonScene::Load()
 	player->addComponent<SpellComponent>(15.0f, &(fireball->getSprite()), &(lightning->getSprite()), &(frost->getSprite()));
 
 	// Give the player some health potions
-	player->addComponent<PotionComponent>();
+	player->addComponent<PotionComponent>(&(potion->getSprite()), potionNum->getText());
 
 	auto Sounds = makeEntity();
 	{
