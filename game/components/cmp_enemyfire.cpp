@@ -4,6 +4,7 @@
 #include "cmp_health.h"
 #include "../arvenhold.h"
 #include "cmp_player_physics.h"
+#include "cmp_sound.h"
 
 using namespace std;
 using namespace sf;
@@ -95,19 +96,15 @@ EnemyAttackComponent::EnemyAttackComponent(Entity* p, Vector2f direction, float 
     {
         s->setTexure(Resources::get<Texture>("death_ball.png"));
         pc->impulse(direction * 30.0f);
-        /*if (eCast->getStatus() != 2)
-        {
-            eCast->play();
-        }*/
+        auto hitSound = _parent->scene->ents.find("sound")[0];
+        hitSound->get_components<SoundComponent>()[3]->play();
     }
     else if (type == 1)
     {
         s->setTexure(Resources::get<Texture>("arrow.png"));
         pc->impulse(direction * 50.0f);
-        /*if (eShoot->getStatus() != 2)
-        {
-            eShoot->play();
-        }*/
+        auto hitSound = _parent->scene->ents.find("sound")[0];
+        hitSound->get_components<SoundComponent>()[3]->play();
     }
     pc->getFixture()->SetSensor(true);
 }
@@ -143,6 +140,7 @@ void EnemyFireComponent::fire()
             auto fireball = _parent->scene->makeEntity();
             fireball->setPosition(_parent->getPosition() + 20.0f * direction);
             fireball->addComponent<EnemyAttackComponent>(direction, _damage, _type, 4.0f);
+
         }
         else
         {

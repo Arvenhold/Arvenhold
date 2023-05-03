@@ -1,5 +1,7 @@
 #include "cmp_health.h"
 #include "cmp_sprite.h"
+#include "engine.h"
+#include "cmp_sound.h"
 
 using namespace sf;
 
@@ -25,6 +27,16 @@ void HealthComponent::update(double dt)
 	if (_currentHP <= 0)
 	{
 		_parent->setForDelete();
+		if (_parent->getTags().find("player") != _parent->getTags().end())
+		{
+			//auto hitSound = _parent->scene->ents.find("sound")[0];
+			//hitSound->get_components<SoundComponent>()[0]->play();
+		}
+		else
+		{
+			auto hitSound = _parent->scene->ents.find("sound")[0];
+			hitSound->get_components<SoundComponent>()[4]->play();
+		}
 	}
 }
 
@@ -44,17 +56,12 @@ void HealthComponent::takeDamage(int damage)
 
 		if (_parent->getTags().find("player") != _parent->getTags().end())
 		{
-			/*if (pHit->getStatus() != 2)
-			{
-				pHit->play();
-			}*/
+			auto hitSound = _parent->scene->ents.find("sound")[0];
+			hitSound->get_components<SoundComponent>()[0]->play();
 		}
 		else
 		{
-			/*if (eHit->getStatus() != 2)
-			{
-				eHit->play();
-			}*/
+			
 		}
 
 		// Give a red look to signify damage taken

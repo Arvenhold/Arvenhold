@@ -1,6 +1,7 @@
 #include "cmp_lightbolt.h"
 #include <system_resources.h>
 #include "cmp_health.h"
+#include "cmp_sound.h"
 using namespace std;
 using namespace sf;
 
@@ -76,6 +77,9 @@ LightningBoltComponent::LightningBoltComponent(Entity* p, Vector2f direction, bo
     _hit = false;
     _duration = 0;
     _casted = cast;
+
+    auto hitSound = _parent->scene->ents.find("sound")[0];
+    hitSound->get_components<SoundComponent>()[2]->play();
 
     auto s = p->addComponent<SpriteComponent>();
 

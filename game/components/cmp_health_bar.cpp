@@ -2,8 +2,8 @@
 #include <system_resources.h>
 #include "cmp_sprite.h"
 #include "cmp_health.h"
-using namespace std;
 
+using namespace std;
 using namespace sf;
 
 /// <summary>
@@ -25,7 +25,7 @@ void HealthBarComponent::update(double dt)
 		auto max = health->getMaxHealth();
 
 		// Get current:max health ratio
-		auto hp = (2.0f * current) / (1.0f * max);
+		auto hp = (_scale * current) / (1.0f * max);
 
 		// Update location
 		EntityTrackerComponent::update(dt);
@@ -39,9 +39,9 @@ void HealthBarComponent::update(double dt)
 
 		// Set healthbar position
 		auto hpPos = hpBar->getSprite().getPosition();
-		hpBar->getSprite().setScale(Vector2f(hp, 2.0f));
+		hpBar->getSprite().setScale(Vector2f(hp, _scale));
 		hpBackground->getSprite().setPosition(hpOffset + hpBackground->getSprite().getPosition());
-		hpBar->getSprite().setPosition(hpOffset + Vector2f(hpPos.x - 32, hpPos.y));
+		hpBar->getSprite().setPosition(hpOffset + Vector2f(hpPos.x - 32* _scale*0.5f, hpPos.y));
 	}
 }
 
@@ -70,11 +70,13 @@ HealthBarComponent::HealthBarComponent(Entity* p, Entity* ttarget, Entity* hpTar
 		// Get the healthbar sprite
 		auto bar = Resources::get<Texture>("hp_bar.png");
 
+		_scale = hpTarget->get_components<SpriteComponent>()[0]->getSprite().getScale().x;
+
 		// Set the healthbar background
 		auto sbg = p->addComponent<SpriteComponent>();
 		sbg->setTexure(bar);
 		sbg->getSprite().setOrigin(Vector2f(16.f, 40.f));
-		sbg->getSprite().setScale({ 2, 2 });
+		sbg->getSprite().setScale({ _scale, _scale });
 		sbg->getSprite().setColor(Color::Black);
 
 		// Set the healthbar health bar
@@ -82,7 +84,7 @@ HealthBarComponent::HealthBarComponent(Entity* p, Entity* ttarget, Entity* hpTar
 		sh->setTexure(bar);
 		sh->getSprite().setOrigin(Vector2f(0.f, 40.f));
 		sh->getSprite().setPosition(Vector2f(16, 0));
-		sh->getSprite().setScale({ 2, 2 });
+		sh->getSprite().setScale({ _scale, _scale });
 
 		// If it is the player make it green
 		if (hpTarget->getTags().find("player") != hpTarget->getTags().end())

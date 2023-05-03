@@ -17,6 +17,7 @@
 #include "../components/cmp_health.h"
 #include "../components/cmp_enemyfire.h"
 #include "../components/cmp_potion.h"
+#include "../components/cmp_sound.h"
 
 using namespace std;
 using namespace sf;
@@ -193,6 +194,7 @@ void DungeonScene::Load()
 	enemies.clear();
 	hpBars.clear();
 
+
 	// Current dungeon level
 	level = 1;
 
@@ -224,8 +226,6 @@ void DungeonScene::Load()
 
 	// Give the player some health
 	player->addComponent<HealthComponent>(200);
-	player->addComponent<PotionComponent>();
-
 
 	// Set standard physics body
 	b2PolygonShape Shape;
@@ -301,8 +301,30 @@ void DungeonScene::Load()
 	potion->getSprite().setOrigin({ 32, 32 });
 	potion->getSprite().setScale({ 1.5, 1.5 });
 
+	auto potionNum = ui->addComponent<UITextComponent>("5", Vector2f(300, 385));
+	potionNum->getText()->setFillColor(Color::White);
+	potionNum->getText()->setCharacterSize(72);
+	auto width = potionNum->getText()->getLocalBounds().width / 2.f;
+	auto height = potionNum->getText()->getLocalBounds().height / 2.f;
+	potionNum->getText()->setOrigin({ width, height });
+
 	// Give player some spells
 	player->addComponent<SpellComponent>(15.0f, &(fireball->getSprite()), &(lightning->getSprite()), &(frost->getSprite()));
+
+	// Give the player some health potions
+	player->addComponent<PotionComponent>();
+
+	auto Sounds = makeEntity();
+	{
+		Sounds->addComponent<SoundComponent>("Hurt.wav");
+		Sounds->addComponent<SoundComponent>("Player_cast.wav");
+		Sounds->addComponent<SoundComponent>("lightning_2.wav");
+		Sounds->addComponent<SoundComponent>("Enemy_cast.wav");
+		Sounds->addComponent<SoundComponent>("Enemy_death.wav");
+		Sounds->addComponent<SoundComponent>("Projectile_Explosion.wav");
+		//Sounds->addComponent<SoundComponent>("Player_cast.wav");
+	}
+	Sounds->addTag("sound");
 
 	// Set window view
 	Engine::GetWindow().setView(view);
