@@ -8,20 +8,13 @@ protected:
 
 	// cooldown
 	float _cooldown;
-	//bool _ready;
 
-	//radius
-	//float _radius;
-
+	// Damage
 	float _damage;
 
+	// Attack type
 	int _type;
-	
-	//has it been cast lately
-	//bool _cast;
 
-	//sprite
-	//sf::Sprite* _sprite;
 public:
 
 	void fire();
@@ -49,4 +42,18 @@ public:
 	void render() override {}
 	explicit EnemyAttackComponent(Entity* p, sf::Vector2f direction, float damage, int type, float lifetime);
 	EnemyAttackComponent() = delete;
+};
+
+class EnemyHitComponent : public Component {
+protected:
+
+	Entity* _player;
+	int _damage;
+
+public:
+	void hit();
+	void update(double dt) override {};
+	void render() override {}
+	explicit EnemyHitComponent(Entity* p, Entity* player, int damage);
+	EnemyHitComponent() = delete;
 };

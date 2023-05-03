@@ -1,8 +1,6 @@
 #include "arvenhold.h"
 #include "engine.h"
 #include "filehandling.h"
-//#include <SFML/Audio/SoundBuffer.hpp>
-
 
 using namespace std;
 using namespace sf;
@@ -12,6 +10,7 @@ DungeonScene dungeonScene;
 MenuScene menuScene;
 OverGroundScene ogScene;
 SettingsScene sScene;
+DeathScene dScene;
 
 // Sindow size
 int gameWidth;
@@ -34,17 +33,28 @@ shared_ptr<Sound> eDeath;
 // Start the damn thing
 int main() {
 
-	/*pHit.setBuffer(*Resources::load<SoundBuffer>(""));
-	pCast.setBuffer(*Resources::load<SoundBuffer>(""));
-	pDeath.setBuffer(*Resources::load<SoundBuffer>(""));
-	explode.setBuffer(*Resources::load<SoundBuffer>(""));
-	eHit.setBuffer(*Resources::load<SoundBuffer>(""));
-	eCast.setBuffer(*Resources::load<SoundBuffer>(""));
-	eDeath.setBuffer(*Resources::load<SoundBuffer>(""));*/
+
+	//auto _pHit = Resources::load<SoundBuffer>("Hurt.wav");
+
+
+
+
+
+
+
+
+	//pHit->setBuffer(*_pHit);
+	//pCast->setBuffer(*Resources::load<SoundBuffer>("Player_cast.wav"));
+	//pDeath->setBuffer(*Resources::load<SoundBuffer>(""));
+	//explode->setBuffer(*Resources::load<SoundBuffer>(""));
+	//eHit->setBuffer(*Resources::load<SoundBuffer>("Hurt.wav"));
+	//eCast->setBuffer(*Resources::load<SoundBuffer>("Enemy_cast.wav"));
+	//eDeath->setBuffer(*Resources::load<SoundBuffer>("Enemy_death.wav"));
 
 	FileHandler::load(gameHeight, gameWidth, level);
 
 	Engine::Start(gameWidth, gameHeight, "Arvenhold", &menuScene);
+
 
 	FileHandler::save(gameHeight, gameWidth, level);
 

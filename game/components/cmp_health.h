@@ -25,6 +25,4 @@ public:
 	int getHealth();
 	int getMaxHealth();
 	bool isDead();
-
-	void IsHit(std::shared_ptr<Entity> p, std::shared_ptr<Entity> e);
 };

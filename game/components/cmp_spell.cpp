@@ -8,6 +8,7 @@
 #include <system_resources.h>
 #include "cmp_lightbolt.h"
 #include "../arvenhold.h"
+#include "cmp_sound.h"
 
 using namespace std;
 using namespace sf;
@@ -28,7 +29,6 @@ void SpellComponent::update(double dt)
     {
         _fireS->setColor(Color(255, 255, 255));
         _fCast = false;
-        //pCast->play();
     }
 
     // If lightning strike can be cast, reset UI for it
@@ -36,7 +36,6 @@ void SpellComponent::update(double dt)
     {
         _lightS->setColor(Color(255, 255, 255));
         _lCast = false;
-        //pCast->play();
     }
 
     // If frost orb can be cast, reset UI for it
@@ -44,23 +43,24 @@ void SpellComponent::update(double dt)
     {
         _frostS->setColor(Color(255, 255, 255));
         _cCast = false;
-        //pCast->play();
     }
 
     // Cast fireball
 
-    if (controls[4] < 200)
+    if (controls[4] >= 200)
     {
-        if (_firetime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 2)))
+        if (_firetime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 4)))
         {
-            fire();                                     // Cast the spell
-            _firetime = 1.f;                            // Set cooldown
-            _fireS->setColor(Color(150, 150, 150));     // Darken UI
-            _fCast = true;                              // Set casted
+            fire();                                                     // Cast the spell
+            _firetime = 1.f;                                            // Set cooldown
+            _fireS->setColor(Color(150, 150, 150));                     // Darken UI
+            _fCast = true;                                              // Set casted
+            auto hitSound = _parent->scene->ents.find("sound")[0];      // Get sound
+            hitSound->get_components<SoundComponent>()[1]->play();      // Play sound
         }
 
         // Cast lightning strike
-        if (_lighttime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 3)))
+        if (_lighttime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4] - 200)) || Joystick::isButtonPressed(0, 5)))
         {
             lightning();                                // Cast the spell
             _lighttime = 1.5f;                          // Set cooldown
@@ -69,26 +69,30 @@ void SpellComponent::update(double dt)
         }
 
         // Cast frost orb
-        if (_coldtime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4]-200)) || Joystick::isButtonPressed(0, 1)))
+        if (_coldtime <= 0.f && (Mouse::isButtonPressed(Mouse::Button(controls[4]-200)) || Joystick::getAxisPosition(0, Joystick::Z) > 0))
         {
-            cold();                                     // Cast the spell
-            _coldtime = 3.f;                            // Set cooldown
-            _frostS->setColor(Color(150, 150, 150));    // Darken UI
-            _cCast = true;                              // Set casted
+            cold();                                                     // Cast the spell
+            _coldtime = 3.f;                                            // Set cooldown
+            _frostS->setColor(Color(150, 150, 150));                    // Darken UI
+            _cCast = true;                                              // Set casted
+            auto hitSound = _parent->scene->ents.find("sound")[0];      // Get sound
+            hitSound->get_components<SoundComponent>()[1]->play();      // Play sound
         }
     }
-    else if (controls[4] >= 200)
+    else if (controls[4] < 200)
     {
-        if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 2)))
+        if (_firetime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 4)))
         {
-            fire();                                     // Cast the spell
-            _firetime = 1.f;                            // Set cooldown
-            _fireS->setColor(Color(150, 150, 150));     // Darken UI
-            _fCast = true;                              // Set casted
+            fire();                                                     // Cast the spell
+            _firetime = 1.f;                                            // Set cooldown
+            _fireS->setColor(Color(150, 150, 150));                     // Darken UI
+            _fCast = true;                                              // Set casted
+            auto hitSound = _parent->scene->ents.find("sound")[0];      // Get sound
+            hitSound->get_components<SoundComponent>()[1]->play();      // Play sound
         }
 
         // Cast lightning strike
-        if (_lighttime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 3)))
+        if (_lighttime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 5)))
         {
             lightning();                                // Cast the spell
             _lighttime = 1.5f;                          // Set cooldown
@@ -97,12 +101,14 @@ void SpellComponent::update(double dt)
         }
 
         // Cast frost orb
-        if (_coldtime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::isButtonPressed(0, 1)))
+        if (_coldtime <= 0.f && (Keyboard::isKeyPressed(Keyboard::Key(controls[4])) || Joystick::getAxisPosition(0, Joystick::Z) > 0))
         {
-            cold();                                     // Cast the spell
-            _coldtime = 3.f;                            // Set cooldown
-            _frostS->setColor(Color(150, 150, 150));    // Darken UI
-            _cCast = true;                              // Set casted
+            cold();                                                     // Cast the spell
+            _coldtime = 3.f;                                            // Set cooldown
+            _frostS->setColor(Color(150, 150, 150));                    // Darken UI
+            _cCast = true;                                              // Set casted
+            auto hitSound = _parent->scene->ents.find("sound")[0];      // Get sound
+            hitSound->get_components<SoundComponent>()[1]->play();      // Play sound
         }
     }
 }
@@ -117,7 +123,7 @@ void SpellComponent::fire() const {
     auto yDir = 1.0f;
 
     // Check for mouse or controller
-    if (true)
+    if (!Joystick::isConnected(0))
     {
         // Set direction to towards mouse
         xDir = 1.0f * Mouse::getPosition(Engine::GetWindow()).x - Engine::getWindowSize().x * 0.5f;
@@ -126,8 +132,8 @@ void SpellComponent::fire() const {
     else
     {
         // Set direction to towards player movement
-        xDir = Joystick::getAxisPosition(0, Joystick::X);
-        yDir = Joystick::getAxisPosition(0, Joystick::Y);
+        xDir = Joystick::getAxisPosition(0, Joystick::U);
+        yDir = Joystick::getAxisPosition(0, Joystick::R);
     }
 
     // Normalise direction vector

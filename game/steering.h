@@ -46,7 +46,16 @@ public:
 };
 
 // Melee
-
+class Hit : public SteeringBehaviour {
+private:
+    Entity* _character;
+    Entity* _target;
+public:
+    Hit() = delete;
+    Hit(Entity* character, Entity* target)
+        : _character(character), _target(target) { }
+    SteeringOutput getSteering() const noexcept;
+};
 
 // Arrow
 
