@@ -47,6 +47,7 @@ int level;
 // Is boss dead
 bool bossDead;
 bool doorOpened;
+bool playerDead;
 
 /// <summary>
 /// Update dungeon
@@ -59,8 +60,10 @@ void DungeonScene::Update(const double& dt)
 	{
 		Engine::ChangeScene(&menuScene);
 	}
-	else if (player->is_fordeletion())
+	else if (player->is_fordeletion() && !playerDead)
 	{
+		playerDead = true;
+
 		// decrement dungeon level
 		if (level > 1)
 		{
@@ -134,7 +137,7 @@ void DungeonScene::Update(const double& dt)
 			// Update entities
 			player->update(dt);
 
-			if (boss->is_fordeletion())
+			if (boss->is_fordeletion() && !bossDead)
 			{
 				bossDead = true;
 
@@ -150,8 +153,11 @@ void DungeonScene::Update(const double& dt)
 
 			}
 
-			if (player->is_fordeletion())
+			if (player->is_fordeletion() && !playerDead)
 			{
+
+				playerDead = true;
+
 				// decrement dungeon level
 				if (level > 1)
 				{
@@ -173,6 +179,22 @@ void DungeonScene::Update(const double& dt)
 				}
 
 				Scene::Update(dt);
+
+				if (boss->is_fordeletion() && !bossDead)
+				{
+					bossDead = true;
+
+
+					// Increment dungeon level
+					if (level < 10)
+					{
+						level++;
+					}
+
+					// Save game
+					FileHandler::save(Engine::getWindowSize().y, Engine::getWindowSize().x, level);
+
+				}
 
 				// Set visibility status for near entities
 				for (auto e : ents.list)
