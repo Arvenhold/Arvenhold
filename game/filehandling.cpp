@@ -79,7 +79,7 @@ void FileHandler::load(int &gameHeight, int &gameWidth, int &save) {
 		controls[2] = 18;
 		controls[3] = 3;
 		controls[4] = 200;
-		controls[5] = 203;
+		controls[5] = 201;
 		gameHeight = 1080;
 		gameWidth = 1920;
 		saved_level = 1;
