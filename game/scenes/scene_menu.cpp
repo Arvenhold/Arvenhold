@@ -126,7 +126,7 @@ void MenuScene::Render()
 void MenuScene::Load() 
 {
 	// Is loading
-	cout << " Scene Menu Load" << endl;
+	//cout << " Scene Menu Load" << endl;
 
 	sRatio = (1.0f * gameHeight) / 1080.0f;
 

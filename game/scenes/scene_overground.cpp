@@ -56,7 +56,7 @@ void OverGroundScene::Render()
 void OverGroundScene::Load()
 {
 	// Loading overground
-	cout << " Scene Dungeon Load" << endl;
+	//cout << " Scene Dungeon Load" << endl;
 
 	// Make the ground
 	auto ground = makeEntity();

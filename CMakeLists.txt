@@ -84,3 +84,7 @@ set_target_properties(ARVENHOLD
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
 )
+
+if(MSVC) # Hide Console in release builds
+  set_target_properties(ARVENHOLD PROPERTIES LINK_FLAGS_RELEASE "/SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+endif(MSVC)

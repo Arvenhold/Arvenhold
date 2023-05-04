@@ -227,7 +227,7 @@ void DungeonScene::Update(const double& dt)
 void DungeonScene::Load()
 {
 	// Yes, this is the dungeon scene
-	cout << " Scene Dungeon Load" << endl;
+	//cout << " Scene Dungeon Load" << endl;
 
 	// Make sure vectors are clear
 	pillarPos.clear();

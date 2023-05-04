@@ -30,11 +30,11 @@ void FileHandler::save(int gameHeight, int gameWidth, int save) {
 
 	fstream file("res/saves/save_1.txt",ios::app);       // note no mode needed
 	if (!file.is_open()) {
-		cout << " Failed to open" << endl;
+		//cout << " Failed to open" << endl;
 	}
 	else {
 
-		cout << "Opened OK" << endl;
+		//cout << "Opened OK" << endl;
 		//convert wasd to chars
 
 		//convert spell to left click
@@ -85,10 +85,10 @@ void FileHandler::load(int &gameHeight, int &gameWidth, int &save) {
 		saved_level = 1;
 
 
-		cout << " Failed to open" << endl;
+		//cout << " Failed to open" << endl;
 	}
 	else {
-		cout << "Opened OK" << endl;
+		//cout << "Opened OK" << endl;
 
 		stringstream output;
 		output << file.rdbuf();

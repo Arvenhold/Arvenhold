@@ -15,20 +15,6 @@ extern OverGroundScene ogScene;
 extern SettingsScene sScene;
 extern DeathScene dScene;
 
-// Player sfx
-extern std::shared_ptr<sf::Sound> pHit;
-extern std::shared_ptr<sf::Sound> pCast;
-extern std::shared_ptr<sf::Sound> pDeath;
-
-// Explosions make sound
-extern std::shared_ptr<sf::Sound> explode;
-
-// Enemy sfx
-extern std::shared_ptr<sf::Sound> eHit;
-extern std::shared_ptr<sf::Sound> eCast;
-extern std::shared_ptr<sf::Sound> eShoot;
-extern std::shared_ptr<sf::Sound> eDeath;
-
 // Resolution
 extern int gameWidth;
 extern int gameHeight;

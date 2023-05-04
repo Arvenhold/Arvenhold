@@ -56,7 +56,7 @@ void DeathScene::Update(const double& dt)
 void DeathScene::Load()
 {
 	// Yes, this is the dungeon scene
-	cout << " Scene Death Load" << endl;
+	//cout << " Scene Death Load" << endl;
 
 	//
 	sDRatio = (1.0f * gameHeight) / 1080.0f;
