@@ -167,7 +167,7 @@ void MenuScene::Load()
 		s->getSprite().setScale({ 1.2f,1 });
 
 		// For "Continue" button, if no save to load, make it darker
-		if (i == 1 && level == 1)
+		if (i == 1 && level < 2)
 		{
 			s->getSprite().setColor(Color(50, 50, 50));
 		}
@@ -199,7 +199,7 @@ void MenuScene::Load()
 		t->getText()->setOrigin({ width, height });
 
 		// If no save to load
-		if (level == 1)
+		if (level < 2)
 		{
 			// Set button text darker
 			t->getText()->setFillColor(Color(130, 130, 0));
